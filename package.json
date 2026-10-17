@@ -1,0 +1,9 @@
+{
+  "name": "organized-life",
+  "private": true,
+  "description": "Organized Life — life organisation as an illustrated home (PWA). No build step; this file only marks .js files as ES modules for the Node test runner.",
+  "type": "module",
+  "scripts": {
+    "test": "node tests/run-node.mjs"
+  }
+}

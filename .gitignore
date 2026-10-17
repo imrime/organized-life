@@ -1,0 +1,18 @@
+# Secrets (never commit)
+.env.local
+.env*.local
+
+# OS / editor noise
+.DS_Store
+
+# Build output (created in CI only)
+_site/
+
+# Tooling
+node_modules/
+__pycache__/
+
+# Large art sources (keep masters outside the repo)
+assets-src/**/*.psd
+assets-src/**/*.procreate
+assets-src/**/*.kra

@@ -1,0 +1,52 @@
+/* Design tokens (docs/spec/03-ux-shell.md §16). */
+:root {
+  --ink: #2B2420;
+  --ink-2: #6B625B;
+  --ink-3: #9A9089;
+  --sheet-bg: #F8F6F1;
+  --surface: #FFFFFF;
+  --surface-2: #F1ECE5;
+  --line: #DCCFC2;
+  --accent: #B83C48;
+  --accent-strong: #9E2F3A;
+  --accent-ink: #FFFFFF;
+  --accent-soft: #F4DDE0;
+  --ok: #4F7A5A;
+  --warn: #C98A2B;
+  --info: #5E7B8C;
+  --backdrop: rgba(20, 16, 12, 0.45);
+  --page-bg: #E6E0D8;
+
+  --radius-s: 8px;
+  --radius-m: 12px;
+  --radius-l: 20px;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+
+  --z-stage: 0;
+  --z-hit: 10;
+  --z-bars: 20;
+  --z-backdrop: 30;
+  --z-sheet: 40;
+  --z-dialog: 50;
+  --z-toast: 60;
+  --z-overlay: 70;
+
+  --topbar-h: 52px;
+  --strip-h: 40px;
+  --bottombar-h: 64px;
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+
+  --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans", Helvetica, Arial, sans-serif;
+
+  /* Current room palette (set per location by the stage). */
+  --wall: #E8D9D1;
+  --floor: #C7AB91;
+}

@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Organized Life — tests</title>
+  <style>
+    body { font: 14px/1.4 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 16px; color: #2B2420; background: #F8F6F1; }
+    h1 { font-size: 18px; }
+    .ok { color: #4F7A5A; }
+    .fail { color: #B83C48; font-weight: 600; }
+    .err { color: #B83C48; margin: 0 0 8px 20px; white-space: pre-wrap; }
+    #summary { font-weight: 700; margin: 12px 0; }
+  </style>
+</head>
+<body>
+  <h1>Organized Life — tests</h1>
+  <div id="summary">Running…</div>
+  <div id="results"></div>
+  <script type="module">
+    import { runAll } from './harness.js';
+    import { unitTests } from './unit/index.js';
+    import { browserTests } from './browser/index.js';
+
+    const only = new URLSearchParams(location.search).get('only');
+    const loaders = only === 'unit' ? unitTests : only === 'browser' ? browserTests : [...unitTests, ...browserTests];
+    let results;
+    try {
+      results = await runAll(loaders);
+    } catch (err) {
+      document.getElementById('summary').textContent = `ERROR ${err && err.stack ? err.stack : err}`;
+      document.title = 'ERROR';
+      await report({ results: [], error: String(err && err.stack ? err.stack : err) });
+      throw err;
+    }
+    await report({ results });
+
+    // Optional: post results to a local automation server (?report=name). Ignored when no such endpoint exists.
+    async function report(payload) {
+      const name = new URLSearchParams(location.search).get('report');
+      if (!name) return;
+      try {
+        await fetch(`/__report/${encodeURIComponent(name)}`, { method: 'POST', body: JSON.stringify(payload) });
+      } catch {
+        // no automation server — nothing to do
+      }
+    }
+    const failed = results.filter((r) => !r.ok);
+    const list = document.getElementById('results');
+    for (const r of results) {
+      const row = document.createElement('div');
+      row.className = r.ok ? 'ok' : 'fail';
+      row.textContent = `${r.ok ? '✓' : '✗'} ${r.suite} › ${r.name}`;
+      list.append(row);
+      if (!r.ok) {
+        const err = document.createElement('div');
+        err.className = 'err';
+        err.textContent = r.error;
+        list.append(err);
+      }
+    }
+    const summary = `${failed.length ? 'FAIL' : 'PASS'} ${results.length - failed.length}/${results.length}`;
+    document.getElementById('summary').textContent = summary;
+    document.title = summary;
+  </script>
+</body>
+</html>

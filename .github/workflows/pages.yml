@@ -1,0 +1,52 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v7
+
+      # Fail fast before publishing: service-worker asset list and unit tests.
+      - name: Verify
+        run: |
+          python3 tools/check_sw_assets.py
+          node tests/run-node.mjs
+
+      - name: Build _site
+        run: |
+          set -euo pipefail
+          SHA8="${GITHUB_SHA::8}"
+          rm -rf _site && mkdir _site
+          cp -R index.html manifest.webmanifest sw.js css js icons assets _site/
+
+          sed -i "s/const CACHE = 'organized-life-dev';/const CACHE = 'organized-life-${SHA8}';/" _site/sw.js
+          grep -q "const CACHE = 'organized-life-${SHA8}';" _site/sw.js || { echo "::error::CACHE substitution failed"; exit 1; }
+
+          sed -i "s/export const BUILD = 'dev';/export const BUILD = '${SHA8}';/" _site/js/version.js
+          grep -q "export const BUILD = '${SHA8}';" _site/js/version.js || { echo "::error::BUILD substitution failed"; exit 1; }
+
+      - uses: actions/configure-pages@v6
+
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: _site
+
+      - id: deployment
+        uses: actions/deploy-pages@v5
