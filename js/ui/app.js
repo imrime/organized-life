@@ -7,10 +7,14 @@ import { useProfile } from './hooks.js';
 import { PROFILE } from '../core/schema.js';
 import { setLanguage, setTimeFormat } from '../core/i18n.js';
 import { TopBar, BottomBar } from './bars.js';
+import { NextTaskStrip } from './next-task-strip.js';
 import { Stage } from '../scene/stage.js';
 import { SheetHost } from './sheet.js';
 import { Toasts } from './toast.js';
 import { DialogHost } from './dialog.js';
+import { AlarmOverlay } from './alarm-overlay.js';
+import { Nightstand } from './nightstand.js';
+import { RoomTour, maybeStartTour } from './room-tour.js';
 
 const motionQuery = typeof matchMedia === 'function' ? matchMedia('(prefers-reduced-motion: reduce)') : null;
 
@@ -39,17 +43,31 @@ function useDisplaySettings(/** @type {Record<string, any>} */ settings) {
 export function App() {
   const settings = useProfile(PROFILE.settings);
   useDisplaySettings(settings);
-  const { locationId, sheet, dialog } = useUi();
-  const blocked = Boolean(sheet || dialog);
+  const { locationId, sheet, dialog, nightstand, tour, ringing } = useUi();
+  const blocked = Boolean(sheet || dialog || tour || ringing?.length);
+
+  // First visit to a location runs its room tour (after the travel banner).
+  useEffect(() => {
+    const timer = setTimeout(maybeStartTour, 650);
+    return () => clearTimeout(timer);
+  }, [locationId, Boolean(sheet), nightstand, (settings.toursSeen ?? []).length]);
+
+  if (nightstand) {
+    // Low-power mode: scene, bars and sheets are unmounted.
+    return html`<div class="app night"><${Nightstand} /><${AlarmOverlay} /></div>`;
+  }
 
   return html`<div class="app">
     <div class="app-main" inert=${blocked}>
       <${TopBar} locationId=${locationId} />
+      <${NextTaskStrip} />
       <${Stage} locationId=${locationId} settings=${settings} />
       <${BottomBar} />
     </div>
     <${SheetHost} />
+    <${RoomTour} />
     <${Toasts} />
     <${DialogHost} />
+    <${AlarmOverlay} />
   </div>`;
 }

@@ -10,8 +10,11 @@ import { useUi } from '../../ui/ui-state.js';
 import { PROFILE } from '../../core/schema.js';
 import { visibleLocations } from '../../world/locations.js';
 import { objectsInRoom, readingOrder } from '../../world/objects.js';
-import { badgeFor } from '../../scene/badges.js';
+import { stateTextFor } from '../../scene/badges.js';
 import { icon } from '../../ui/icons.js';
+import { replayTour } from '../../ui/room-tour.js';
+import { goToLocation } from '../../ui/navigation.js';
+import { closeSheet } from '../../ui/sheet.js';
 
 const SYSTEM = [
   { window: 'map.main', labelKey: 'map.title', emoji: '🗺️' },
@@ -49,10 +52,15 @@ export default function WorldListWindow() {
       ${!query && !sections.length && html`<p class="empty">${t('worldList.empty')}</p>`}
       ${sections.map(
         ({ loc, objects }) => html`<section class="section" key=${loc.id}>
-          <h3 class="section-title">${loc.emoji} ${t(`locations.${loc.id}.name`)}</h3>
+          <div class="section-head">
+            <h3 class="section-title">${loc.emoji} ${t(`locations.${loc.id}.name`)}</h3>
+            <button type="button" class="btn btn-small" onClick=${async () => (await goToLocation(loc.id)) && (await closeSheet()) && replayTour(loc.id)}>
+              ${t('worldList.tour')}
+            </button>
+          </div>
           <div class="group">
             ${objects.map((obj) => {
-              const badge = badgeFor(obj);
+              const state = stateTextFor(obj);
               return html`<button
                 type="button"
                 class="row"
@@ -62,8 +70,8 @@ export default function WorldListWindow() {
                 <span class="main">
                   <span class="title">${t(obj.labelKey)}</span>
                   <span class="subtitle" style="display:block">${t(obj.descriptionKey)}</span>
+                  ${state && html`<span class="state-line">${state}</span>`}
                 </span>
-                ${badge?.text && html`<span class="meta">${badge.aria ?? badge.text}</span>`}
                 <span class="chev">${icon('chevron')}</span>
               </button>`;
             })}

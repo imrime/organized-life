@@ -14,7 +14,7 @@ import { useEffect, useReducer } from './lib.js';
  *   key: number,
  * }} SheetState
  * @typedef {{ id: number, text: string, actionLabel?: string, onAction?: () => void }} ToastItem
- * @typedef {{ title: string, message?: string, confirmLabel: string, cancelLabel: string, destructive?: boolean }} DialogState
+ * @typedef {{ title: string, message?: string, confirmLabel: string, cancelLabel: string, destructive?: boolean, choices?: { value: string, label: string, destructive?: boolean, primary?: boolean }[] }} DialogState
  * @typedef {{
  *   locationId: string,
  *   sheet: SheetState|null,
@@ -22,11 +22,14 @@ import { useEffect, useReducer } from './lib.js';
  *   dialog: DialogState|null,
  *   banner: { text: string, key: number }|null,
  *   veil: boolean,
+ *   ringing: import('../core/reminders.js').ReminderInstance[]|null,
+ *   nightstand: boolean,
+ *   tour: { locationId: string, step: number }|null,
  * }} UiState
  */
 
 /** @type {UiState} */
-let state = { locationId: 'bedroom', sheet: null, toasts: [], dialog: null, banner: null, veil: false };
+let state = { locationId: 'bedroom', sheet: null, toasts: [], dialog: null, banner: null, veil: false, ringing: null, nightstand: false, tour: null };
 
 /** @type {Set<() => void>} */
 const listeners = new Set();

@@ -90,6 +90,25 @@ export function formatDate(localDate, options = { day: 'numeric', month: 'long' 
 }
 
 /**
+ * Weekday names indexed by ISO weekday (1 = Monday … 7 = Sunday); index 0 is empty.
+ * @param {'narrow'|'short'|'long'} [width]
+ * @returns {string[]}
+ */
+export function weekdayNames(width = 'short') {
+  const fmt = new Intl.DateTimeFormat(intlLocale(), { weekday: width });
+  // 2024-01-01 was a Monday.
+  return ['', ...[1, 2, 3, 4, 5, 6, 7].map((d) => fmt.format(new Date(2024, 0, d)))];
+}
+
+/**
+ * "in 7 h 20 min" / "in 5 min".
+ * @param {{ hours: number, minutes: number }} span
+ */
+export function formatIn({ hours, minutes }) {
+  return hours ? t('time.inHoursMinutes', { hours, minutes }) : t('time.inMinutes', { minutes });
+}
+
+/**
  * @param {number} value
  * @param {Intl.NumberFormatOptions} [options]
  */

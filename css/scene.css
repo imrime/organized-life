@@ -121,3 +121,84 @@
   15%, 75% { opacity: 1; translate: -50% 0; }
   100% { opacity: 0; }
 }
+
+/* Container units for text drawn on objects scale with the scene. */
+.safe-zone { container-type: inline-size; }
+
+/* On-object displays (clock digits, calendar date) */
+.obj-display { position: absolute; display: flex; flex-direction: column; align-items: center; pointer-events: none; font-variant-numeric: tabular-nums; color: var(--ink); }
+.hit[data-object="bedroom.alarm-clock"] .obj-display { left: 50%; top: 50%; translate: -50% -50%; font-size: 2.7cqw; font-weight: 800; letter-spacing: -0.03em; }
+.obj-display.dim { opacity: 0.45; }
+.hit[data-object="bedroom.wall-calendar"] .obj-display { inset: 0; }
+.hit[data-object="bedroom.wall-calendar"] .line-0 { position: absolute; top: 18%; color: #fff; font-weight: 800; font-size: 3.2cqw; letter-spacing: 0.08em; }
+.hit[data-object="bedroom.wall-calendar"] .line-1 { position: absolute; top: 48%; font-weight: 800; font-size: 8cqw; line-height: 1; }
+
+/* Feedback pulse after a window that changed the object's data closes */
+.hit.feedback { animation: object-pulse 0.65s var(--ease); }
+@keyframes object-pulse {
+  0% { box-shadow: 0 0 0 0 rgba(184, 60, 72, 0.6); transform: scale(1); }
+  40% { box-shadow: 0 0 0 10px rgba(184, 60, 72, 0); transform: scale(1.04); }
+  100% { box-shadow: 0 0 0 0 rgba(184, 60, 72, 0); transform: scale(1); }
+}
+
+/* Character */
+.character { position: absolute; pointer-events: none; }
+.character-svg { width: 100%; height: 100%; overflow: visible; }
+.character-body { transform-origin: 150px 590px; animation: breathe 4s ease-in-out infinite; }
+.character-eyes { transform-origin: 150px 104px; animation: blink 5.5s infinite; }
+@keyframes breathe { 50% { transform: scaleY(1.012); } }
+@keyframes blink { 0%, 96%, 100% { transform: scaleY(1); } 98% { transform: scaleY(0.1); } }
+
+/* Alarm overlay */
+.alarm-overlay {
+  position: absolute; inset: 0; z-index: var(--z-overlay);
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--space-4);
+  padding: calc(var(--safe-top) + 24px) 24px calc(var(--safe-bottom) + 24px);
+  background: linear-gradient(#FBE9D7, #F3C9A8); color: var(--ink); text-align: center;
+}
+.alarm-bell { font-size: 4rem; animation: shake 0.6s ease-in-out infinite; }
+@keyframes shake { 25% { transform: rotate(-12deg); } 75% { transform: rotate(12deg); } }
+.alarm-time { font-size: 4.5rem; font-weight: 800; font-variant-numeric: tabular-nums; }
+.alarm-labels { font-size: 1.25rem; font-weight: 600; }
+.alarm-actions { display: flex; flex-direction: column; gap: var(--space-3); width: 100%; max-width: 320px; margin-top: var(--space-5); }
+.alarm-actions .btn { min-height: 64px; font-size: 1.125rem; }
+
+/* Nightstand mode: black, dim, nothing animated */
+.app.night { background: #000; }
+.nightstand {
+  position: absolute; inset: 0; z-index: var(--z-overlay);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  background: #000; color: #5A2E2E; user-select: none; -webkit-user-select: none; touch-action: manipulation;
+}
+.nightstand-clock { text-align: center; }
+.nightstand-time { font-size: 5.5rem; font-weight: 300; font-variant-numeric: tabular-nums; letter-spacing: -0.02em; }
+.nightstand-next { font-size: 1.125rem; margin-top: 4px; }
+.nightstand-hint { position: absolute; bottom: calc(var(--safe-bottom) + 96px); font-size: 0.9375rem; }
+.nightstand-exit { position: absolute; bottom: calc(var(--safe-bottom) + 40px); font-size: 0.8125rem; color: #3A2020; }
+.nightstand-card {
+  position: absolute; left: 24px; right: 24px; top: calc(var(--safe-top) + 24px);
+  padding: var(--space-4); border-radius: var(--radius-m); background: #1A1212; color: #B98A8A;
+}
+.nightstand-card p { margin-bottom: var(--space-3); }
+.nightstand-card .btn { background: #2A1C1C; border-color: #3A2626; color: #D9B0B0; }
+
+/* Room tour */
+.tour { position: absolute; inset: 0; z-index: var(--z-overlay); }
+.tour-dim { position: absolute; inset: 0; background: rgba(20, 16, 12, 0.7); }
+.tour-spot {
+  position: absolute; padding: 0; border: 3px solid #fff; border-radius: 16px; background: transparent;
+  box-shadow: 0 0 0 9999px rgba(20, 16, 12, 0.7), 0 0 24px 6px rgba(255, 255, 255, 0.45);
+  transition: left 0.25s var(--ease), top 0.25s var(--ease), width 0.25s var(--ease), height 0.25s var(--ease);
+}
+.tour-card {
+  position: absolute; left: 4%; right: 4%;
+  padding: var(--space-4); border-radius: var(--radius-l);
+  background: var(--surface); box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+}
+.tour-card:focus { outline: none; }
+.tour-head { display: flex; align-items: baseline; gap: var(--space-2); margin-bottom: var(--space-2); }
+.tour-head h2 { flex: 1; font-size: 1.125rem; }
+.tour-count { font-size: 0.8125rem; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+.tour-note { margin-top: var(--space-2); font-size: 0.8125rem; color: var(--warn); font-weight: 600; }
+.tour-actions { display: flex; gap: var(--space-2); margin-top: var(--space-4); }
+.tour-actions .grow { flex: 1; }

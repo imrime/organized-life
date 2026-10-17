@@ -7,4 +7,8 @@ export const unitTests = [
   () => import('./migrations-seed.test.js'),
   () => import('./router.test.js'),
   () => import('./i18n.test.js'),
+  () => import('./world.test.js'),
+  () => import('./alarms.test.js'),
+  () => import('./calendar.test.js'),
+  () => import('./reminders.test.js'),
 ];

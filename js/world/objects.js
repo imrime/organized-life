@@ -1,13 +1,21 @@
 // @ts-check
 // All interactive objects, aggregated from the room definition files.
 
-/** @typedef {import('./types.js').SceneObject} SceneObject */
+import * as bedroom from './rooms/bedroom.js';
 
-/** @type {Record<string, SceneObject[]>} rooms register their objects here as they ship */
-const ROOMS = {};
+/** @typedef {import('./types.js').SceneObject} SceneObject */
+/** @typedef {import('./types.js').CharacterSpot} CharacterSpot */
+
+/** @type {Record<string, { objects: SceneObject[], character: CharacterSpot }>} rooms register here as they ship */
+const ROOMS = { bedroom };
 
 /** @type {SceneObject[]} */
-export const OBJECTS = Object.values(ROOMS).flat();
+export const OBJECTS = Object.values(ROOMS).flatMap((room) => room.objects);
+
+/** @param {string} roomId */
+export function characterSpot(roomId) {
+  return ROOMS[roomId]?.character ?? { anchor: { x: 0.82, y: 0.96 }, height: 0.3, pose: 'stand' };
+}
 
 /** @param {string} id e.g. "bedroom.alarm-clock" */
 export function objectById(id) {

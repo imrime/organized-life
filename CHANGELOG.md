@@ -6,6 +6,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-10-17
+### Added
+- Bedroom scene (portrait placeholder art) with six interactive objects, a paper-doll character and on-object displays (alarm time on the clock face, today's date on the calendar).
+- Alarm clock: repeating and one-shot alarms with sounds (synthesised, no audio files), snooze, vibration, "how alarms work" explainer; ringing overlay with Snooze/Dismiss.
+- Nightstand mode: black low-power screen with a dim minute clock, screen wake lock, burn-in shift, charger hint; double-tap to exit.
+- Wall calendar: month and week views, events, deadlines and reminders with daily/weekly/monthly/yearly repeats, delete one occurrence or the whole series; due tasks shown as deadlines.
+- Reminder engine: in-app delivery, snooze/acknowledge state, missed alarms reported in the new next-task strip.
+- Room tour on the first visit to a location (replayable from the objects list).
+- Objects not built yet open a "coming soon" window with their purpose.
+
+### Changed
+- Objects list shows each object's current state.
+
 ## [0.1.0] - 2026-10-17
 ### Added
 - Implementation specification (`docs/spec/`) derived from the concept PDF, with owner decisions applied.
@@ -18,5 +31,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Local-first data layer: IndexedDB wrapper, atomic undoable store, schema migrations and versioned seeds.
 - Dual-runtime test harness (browser and Node) with unit and IndexedDB tests; asset tooling (`tools/check_sw_assets.py`, `tools/hash_assets.py`).
 
-[Unreleased]: https://github.com/imrime/organized-life/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/imrime/organized-life/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/imrime/organized-life/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/imrime/organized-life/releases/tag/v0.1.0

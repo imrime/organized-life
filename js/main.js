@@ -18,6 +18,12 @@ import { App } from './ui/app.js';
 import { locationById, isVisible } from './world/locations.js';
 import { objectBySlug } from './world/objects.js';
 import { updateSettings } from './features/settings/actions.js';
+import { startReminderEngine } from './core/reminders.js';
+import { reminderState, markFired, purgeOldReminderState } from './core/reminder-state.js';
+import { unlockAudioOnFirstGesture, playChime } from './core/sound.js';
+import { ringAlarms } from './ui/alarm-overlay.js';
+import { openObject } from './ui/navigation.js';
+import './features/register.js';
 
 const root = /** @type {HTMLElement} */ (document.getElementById('app'));
 
@@ -79,6 +85,20 @@ async function boot() {
   initHistory();
 
   render(html`<${App} />`, root);
+
+  unlockAudioOnFirstGesture();
+  await purgeOldReminderState();
+  const watched = ['alarms', 'events', 'tasks', 'reminderState'];
+  startReminderEngine({
+    stateOf: reminderState,
+    markFired,
+    onAlarm: ringAlarms,
+    onReminder: (inst) => {
+      playChime(/** @type {number} */ (store.profile(PROFILE.settings)?.alarmVolume ?? 0.6));
+      toast(`🔔 ${inst.title}`, { actionLabel: t('common.open'), onAction: () => inst.objectId && openObject(inst.objectId) });
+    },
+    subscribe: (listener) => store.subscribe((touched) => watched.some((c) => touched.has(c)) && listener()),
+  });
 
   // Deep link to a window (object slug or ~system window).
   if (fromHash && start === fromHash && route.target) {
