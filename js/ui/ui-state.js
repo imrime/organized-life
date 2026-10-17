@@ -55,6 +55,12 @@ export function subscribeUi(listener) {
 /** Re-renders the calling component on every UI state change. */
 export function useUi() {
   const [, force] = useReducer((n) => n + 1, 0);
-  useEffect(() => subscribeUi(() => force(undefined)), []);
+  const seen = state;
+  useEffect(() => {
+    const unsubscribe = subscribeUi(() => force(undefined));
+    // State may have changed between render and subscription (e.g. a toast raised during boot).
+    if (state !== seen) force(undefined);
+    return unsubscribe;
+  }, []);
   return state;
 }

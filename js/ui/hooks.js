@@ -11,13 +11,15 @@ import { appStore } from '../core/store.js';
 export function useStoreChanges(collections) {
   const [, force] = useReducer((n) => n + 1, 0);
   const key = collections.join('|');
-  useEffect(
-    () =>
-      appStore.subscribe((touched) => {
-        if (collections.some((c) => touched.has(c))) force(undefined);
-      }),
-    [key],
-  );
+  const seen = collections.map((c) => appStore.all(c));
+  useEffect(() => {
+    const unsubscribe = appStore.subscribe((touched) => {
+      if (collections.some((c) => touched.has(c))) force(undefined);
+    });
+    // A write may have landed between render and subscription.
+    if (collections.some((c, i) => appStore.all(c) !== seen[i])) force(undefined);
+    return unsubscribe;
+  }, [key]);
 }
 
 /** @param {string} name */
