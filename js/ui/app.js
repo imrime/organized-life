@@ -15,6 +15,7 @@ import { DialogHost } from './dialog.js';
 import { AlarmOverlay } from './alarm-overlay.js';
 import { Nightstand } from './nightstand.js';
 import { RoomTour, maybeStartTour } from './room-tour.js';
+import { Onboarding } from './onboarding.js';
 
 const motionQuery = typeof matchMedia === 'function' ? matchMedia('(prefers-reduced-motion: reduce)') : null;
 
@@ -44,13 +45,14 @@ export function App() {
   const settings = useProfile(PROFILE.settings);
   useDisplaySettings(settings);
   const { locationId, sheet, dialog, nightstand, tour, ringing } = useUi();
-  const blocked = Boolean(sheet || dialog || tour || ringing?.length);
+  const onboarding = !settings.onboarding?.done;
+  const blocked = Boolean(sheet || dialog || tour || ringing?.length || onboarding);
 
   // First visit to a location runs its room tour (after the travel banner).
   useEffect(() => {
     const timer = setTimeout(maybeStartTour, 650);
     return () => clearTimeout(timer);
-  }, [locationId, Boolean(sheet), nightstand, (settings.toursSeen ?? []).length]);
+  }, [locationId, Boolean(sheet), nightstand, (settings.toursSeen ?? []).length, onboarding]);
 
   if (nightstand) {
     // Low-power mode: scene, bars and sheets are unmounted.
@@ -65,6 +67,7 @@ export function App() {
       <${BottomBar} />
     </div>
     <${SheetHost} />
+    ${onboarding && html`<${Onboarding} />`}
     <${RoomTour} />
     <${Toasts} />
     <${DialogHost} />

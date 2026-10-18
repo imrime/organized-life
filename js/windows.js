@@ -12,11 +12,15 @@ const comingSoon = () => import('./features/coming-soon/window.js');
 export const windows = {
   'alarms.main': { load: () => import('./features/alarms/window.js'), size: 'tall' },
   'calendar.main': { load: () => import('./features/calendar/window.js'), size: 'tall' },
+  'sleep.main': { load: () => import('./features/sleep/window.js'), size: 'tall' },
+  'wardrobe.main': { load: () => import('./features/wardrobe/window.js'), size: 'tall' },
+  'tasks.main': { load: () => import('./features/tasks/window.js'), size: 'tall' },
+  'meds.main': { load: () => import('./features/meds/window.js'), size: 'tall' },
   'settings.main': { load: () => import('./features/settings/window.js'), size: 'tall' },
   'map.main': { load: () => import('./features/map/window.js'), size: 'compact' },
   'world.list': { load: () => import('./features/world-list/window.js'), size: 'tall' },
-  'character.main': { load: comingSoon, size: 'compact', props: { titleKey: 'character.title' } },
-  'quick.main': { load: comingSoon, size: 'compact', props: { titleKey: 'quick.title' } },
+  'character.main': { load: () => import('./features/character/window.js'), size: 'tall' },
+  'quick.main': { load: () => import('./features/quick/window.js'), size: 'compact' },
 };
 
 /** @param {string} id */

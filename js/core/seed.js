@@ -98,6 +98,44 @@ export const seedSteps = [
       tx.setProfile(PROFILE.fitness, { equipment: ['none', 'mat'], weeklyGoal: 3 });
     },
   },
+  {
+    // v0.3.0: care routines, bedtime routine and starter clothes (docs/spec/04-data-model.md §6).
+    version: 2,
+    run(tx) {
+      const all = [1, 2, 3, 4, 5, 6, 7];
+      /** @param {string} key @param {string[]} steps */
+      const steps = (key, list) => list.map((s, i) => ({ id: `${key}-${i + 1}`, label: '', seedKey: `seed.routines.${key}.${s}` }));
+      const routines = [
+        { id: 'routine-bedtime', seedKey: 'seed.routines.bedtime.name', owner: 'bedroom.bed', slot: 'bedtime', steps: steps('bedtime', ['phone', 'clothes', 'read']), days: all, reminderTime: null, enabled: true, order: 0 },
+        { id: 'routine-morning', seedKey: 'seed.routines.morning.name', owner: 'bathroom.mirror-sink', slot: 'morning', steps: steps('morning', ['teeth', 'face', 'skincare', 'deodorant']), days: all, reminderTime: null, enabled: true, order: 0 },
+        { id: 'routine-evening', seedKey: 'seed.routines.evening.name', owner: 'bathroom.mirror-sink', slot: 'evening', steps: steps('evening', ['face', 'teeth', 'skincare']), days: all, reminderTime: null, enabled: true, order: 1 },
+        { id: 'routine-shower', seedKey: 'seed.routines.shower.name', owner: 'bathroom.bath-shower', slot: 'habit', steps: [], days: all, reminderTime: null, enabled: true, order: 0 },
+        { id: 'routine-hairwash', seedKey: 'seed.routines.hairwash.name', owner: 'bathroom.bath-shower', slot: 'habit', steps: [], days: [1, 4], reminderTime: null, enabled: true, order: 1 },
+        { id: 'routine-facemask', seedKey: 'seed.routines.facemask.name', owner: 'bathroom.bath-shower', slot: 'habit', steps: [], days: [7], reminderTime: null, enabled: false, order: 2 },
+      ];
+      for (const r of routines) if (!tx.get('routines', r.id)) tx.insert('routines', { name: '', ...r });
+      tx.setProfile(PROFILE.sleepPlan, { bedtimeRoutineId: 'routine-bedtime' });
+
+      const clothes = [
+        { id: 'cloth-tshirt', seedKey: 'seed.clothes.tshirt', slot: 'top', template: 'tshirt', color: 'white', laundryGroup: 'whites', care: 'normal' },
+        { id: 'cloth-jeans', seedKey: 'seed.clothes.jeans', slot: 'bottom', template: 'jeans', color: 'denim', laundryGroup: 'darks', care: 'normal' },
+        { id: 'cloth-sneakers', seedKey: 'seed.clothes.sneakers', slot: 'shoes', template: 'sneakers', color: 'white', laundryGroup: 'whites', care: 'no_wash' },
+        { id: 'cloth-hoodie', seedKey: 'seed.clothes.hoodie', slot: 'top', template: 'hoodie', color: 'grey', laundryGroup: 'lights', care: 'normal' },
+      ];
+      for (const c of clothes) {
+        if (!tx.get('clothingItems', c.id)) {
+          tx.insert('clothingItems', { name: '', season: 'all', status: 'clean', favorite: false, isNew: false, priceMinor: null, purchasedAt: null, transactionId: null, washCount: 0, notes: '', ...c });
+        }
+      }
+      const character = tx.get('profile', PROFILE.character);
+      if (character && !Object.values(character.equipped ?? {}).some(Boolean)) {
+        tx.setProfile(PROFILE.character, { equipped: { top: 'cloth-tshirt', bottom: 'cloth-jeans', shoes: 'cloth-sneakers' } });
+      }
+      // People upgrading from 0.2 already went through the bedroom: don't show onboarding again.
+      const settings = tx.get('profile', PROFILE.settings);
+      if (settings && (settings.toursSeen ?? []).length) tx.setProfile(PROFILE.settings, { onboarding: { step: 4, done: true } });
+    },
+  },
 ];
 
 export const SEED_VERSION = Math.max(...seedSteps.map((s) => s.version));

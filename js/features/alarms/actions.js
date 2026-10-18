@@ -2,6 +2,7 @@
 // Alarm mutations.
 
 import { appStore } from '../../core/store.js';
+import { PROFILE } from '../../core/schema.js';
 import { acknowledge, snooze } from '../../core/reminder-state.js';
 import { snoozeUntil } from './model.js';
 
@@ -23,7 +24,13 @@ export function saveAlarm(draft, id) {
       snoozeMin: draft.snoozeMin ?? 10,
       enabled: draft.enabled ?? true,
     };
-    if (id) return tx.patch('alarms', id, fields);
+    if (id) {
+      const saved = tx.patch('alarms', id, fields);
+      // F-8: the primary alarm and the sleep plan's wake time stay in sync.
+      const plan = tx.get('profile', PROFILE.sleepPlan);
+      if (saved.primary && plan?.linkAlarm && plan.wakeTime !== saved.time) tx.setProfile(PROFILE.sleepPlan, { wakeTime: saved.time });
+      return saved;
+    }
     const order = tx.all('alarms').length;
     return tx.insert('alarms', { ...fields, primary: false, order });
   });
@@ -31,7 +38,10 @@ export function saveAlarm(draft, id) {
 
 /** @param {string} id */
 export function deleteAlarm(id) {
-  return appStore.mutate('alarms.delete', (tx) => tx.remove('alarms', id));
+  return appStore.mutate('alarms.delete', (tx) => {
+    if (tx.get('alarms', id)?.primary) tx.setProfile(PROFILE.sleepPlan, { linkAlarm: false });
+    tx.remove('alarms', id);
+  });
 }
 
 /**

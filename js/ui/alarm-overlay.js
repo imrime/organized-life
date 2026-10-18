@@ -12,6 +12,7 @@ import { PROFILE } from '../core/schema.js';
 import { dismissAlarms, snoozeAlarms } from '../features/alarms/actions.js';
 import { exitNightstand, powerMode } from '../core/power.js';
 import { toast } from './toast.js';
+import { maybeShowMorning } from '../features/sleep/register.js';
 
 /** @param {import('../core/reminders.js').ReminderInstance[]} instances */
 export function ringAlarms(instances) {
@@ -63,6 +64,8 @@ function Ringing({ instances }) {
       setUi({ nightstand: false });
       toast(t('nightstand.goodMorning'));
     }
+    // A night started with "Go to sleep" is saved from the Good morning page.
+    setTimeout(maybeShowMorning, 300);
   };
 
   const labels = instances.map((i) => i.title).filter(Boolean);

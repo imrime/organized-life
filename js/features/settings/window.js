@@ -11,8 +11,17 @@ import { COMMON_CURRENCIES } from '../../core/money.js';
 import { VERSION, BUILD } from '../../version.js';
 import { appStore } from '../../core/store.js';
 import { updateSettings } from './actions.js';
+import { DataSection, ResetPage } from './data.js';
+import { toast } from '../../ui/toast.js';
 
-export default function SettingsWindow() {
+/** @param {{ page: { id: string }|null, nav: { push: Function, pop: Function, close: Function } }} args */
+export default function SettingsWindow({ page, nav }) {
+  if (page?.id === 'reset') return html`<${ResetPage} nav=${nav} />`;
+  return html`<${SettingsRoot} nav=${nav} />`;
+}
+
+/** @param {{ nav: { push: Function, pop: Function, close: Function } }} props */
+function SettingsRoot({ nav }) {
   const settings = useProfile(PROFILE.settings);
   const currencies = COMMON_CURRENCIES.includes(settings.currency) ? COMMON_CURRENCIES : [settings.currency, ...COMMON_CURRENCIES];
 
@@ -100,8 +109,44 @@ export default function SettingsWindow() {
               onChange=${(/** @type {boolean} */ showHints) => updateSettings({ showHints })}
             />
           <//>
+          <${FieldRow} label=${t('settings.nextTaskStrip')} help=${t('settings.nextTaskStripHelp')}>
+            <${Switch}
+              label=${t('settings.nextTaskStrip')}
+              checked=${settings.nextTaskStrip !== false}
+              onChange=${(/** @type {boolean} */ nextTaskStrip) => updateSettings({ nextTaskStrip })}
+            />
+          <//>
         </div>
       </section>
+
+      <section class="section">
+        <h3 class="section-title">${t('settings.sections.alarms')}</h3>
+        <div class="group">
+          <${FieldRow} label=${t('settings.alarmVolume')} htmlFor="set-volume" stacked>
+            <input id="set-volume" class="range" type="range" min="0.1" max="1" step="0.1" value=${settings.alarmVolume ?? 0.8}
+              onChange=${(/** @type {Event} */ e) => updateSettings({ alarmVolume: Number(/** @type {HTMLInputElement} */ (e.currentTarget).value) })} />
+          <//>
+          <${FieldRow} label=${t('settings.nightstandPrompt')} help=${t('settings.nightstandPromptHelp')}>
+            <${Switch}
+              label=${t('settings.nightstandPrompt')}
+              checked=${settings.nightstandPrompt !== false}
+              onChange=${(/** @type {boolean} */ nightstandPrompt) => updateSettings({ nightstandPrompt })}
+            />
+          <//>
+        </div>
+      </section>
+
+      <section class="section">
+        <h3 class="section-title">${t('settings.sections.places')}</h3>
+        <div class="group">
+          <button type="button" class="row" onClick=${async () => { await updateSettings({ toursSeen: [] }); toast(t('settings.toursReset')); }}>
+            <span class="main"><span class="title">${t('settings.replayTours')}</span>
+              <span class="subtitle" style="display:block">${t('settings.replayToursHelp')}</span></span>
+          </button>
+        </div>
+      </section>
+
+      <${DataSection} nav=${nav} />
 
       <${About} />
     <//>

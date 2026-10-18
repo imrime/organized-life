@@ -77,7 +77,7 @@ function AlarmList({ nav }) {
               <button type="button" class="row-hit" onClick=${() => nav.push('alarm', { id: alarm.id })} aria-label=${t('alarms.editAlarm', { time: formatTime(alarm.time) })}>
                 <span class=${`alarm-time${off ? ' dim' : ''}`}>${formatTime(alarm.time)}</span>
                 <span class="main">
-                  <span class="title">${alarm.label || t('alarms.defaultLabel')}</span>
+                  <span class="title">${alarm.label || (alarm.primary ? t('alarms.wakeUp') : t('alarms.defaultLabel'))}${alarm.primary ? ' 🌙' : ''}</span>
                   <span class="subtitle" style="display:block">${repeatText(alarm.repeatDays)}</span>
                 </span>
               </button>
@@ -116,6 +116,7 @@ function AlarmList({ nav }) {
 function AlarmPage({ id, nav }) {
   const alarms = /** @type {Alarm[]} */ (/** @type {unknown} */ (useCollection('alarms')));
   const settings = useProfile(PROFILE.settings);
+  const sleepPlan = useProfile(PROFILE.sleepPlan);
   const existing = id ? alarms.find((a) => a.id === id) : undefined;
   const base = existing ?? defaultAlarm(alarms);
   const [form, update, markSaved] = useForm({
@@ -139,6 +140,7 @@ function AlarmPage({ id, nav }) {
     const { result } = await saveAlarm(form, id);
     markSaved();
     const at = effectiveNext(/** @type {Alarm} */ (result), new Date());
+    if (existing?.primary && sleepPlan.linkAlarm && existing.time !== form.time) toast(t('alarms.wakeTimeUpdated'));
     toast(at ? t('alarms.setFor', { time: formatTime(form.time), when: formatIn(timeUntil(at, new Date())) }) : t('common.saved'));
     await nav.pop();
     if (!settings.alarmExplainerSeen) {
@@ -149,7 +151,12 @@ function AlarmPage({ id, nav }) {
 
   const onDelete = async () => {
     if (!id) return;
-    const ok = await confirmDialog({ title: t('alarms.deleteTitle'), confirmLabel: t('common.delete'), destructive: true });
+    const ok = await confirmDialog({
+      title: t('alarms.deleteTitle'),
+      message: existing?.primary && settings && sleepPlan.linkAlarm ? t('alarms.deleteLinked') : undefined,
+      confirmLabel: t('common.delete'),
+      destructive: true,
+    });
     if (!ok) return;
     const { token } = await deleteAlarm(id);
     markSaved();

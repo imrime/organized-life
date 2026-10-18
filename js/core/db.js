@@ -112,3 +112,34 @@ export function deleteDb(name) {
     request.onblocked = () => resolve();
   });
 }
+
+/**
+ * Replaces every collection with the given data in one transaction (import / reset).
+ * @param {IDBDatabase} db
+ * @param {Record<string, any[]>} data
+ * @param {{ clearMeta?: boolean }} [options]
+ * @returns {Promise<void>}
+ */
+export function replaceAll(db, data, { clearMeta = false } = {}) {
+  const stores = clearMeta ? [...COLLECTIONS, META_STORE] : [...COLLECTIONS];
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(stores, 'readwrite');
+    for (const name of stores) {
+      const store = tx.objectStore(name);
+      store.clear();
+      for (const record of data[name] ?? []) store.put(record);
+    }
+    tx.oncomplete = () => resolve();
+    tx.onerror = () => reject(tx.error);
+    tx.onabort = () => reject(tx.error ?? new Error('Transaction aborted'));
+  });
+}
+
+/** The app's open database (set at boot; used by backup import and reset). */
+/** @type {IDBDatabase} */
+export let appDb = /** @type {any} */ (null);
+
+/** @param {IDBDatabase} db */
+export function setAppDb(db) {
+  appDb = db;
+}

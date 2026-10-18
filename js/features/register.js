@@ -4,3 +4,7 @@
 
 import './alarms/register.js';
 import './calendar/register.js';
+import './sleep/register.js';
+import './tasks/register.js';
+import './meds/register.js';
+import './wardrobe/register.js';

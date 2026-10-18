@@ -10,7 +10,8 @@ import { useUi } from '../ui/ui-state.js';
 import { useProfile, useStoreChanges } from '../ui/hooks.js';
 import { PROFILE } from '../core/schema.js';
 import { HitLayer } from './hit-layer.js';
-import { SceneCharacter } from './character.js';
+import { SceneCharacter, outfitFrom } from './character.js';
+import { appStore } from '../core/store.js';
 import { roomArt } from './art/index.js';
 
 /** @param {{ locationId: string, settings: Record<string, any> }} props */
@@ -20,14 +21,14 @@ export function Stage({ locationId, settings }) {
   const character = useProfile(PROFILE.character);
   const objects = loc ? objectsInRoom(loc.id) : [];
   // Re-render art and badges whenever data behind this room's objects changes.
-  useStoreChanges([...new Set(objects.flatMap((o) => (Array.isArray(o.dataKey) ? o.dataKey : [o.dataKey]))), 'reminderState']);
+  useStoreChanges([...new Set(objects.flatMap((o) => (Array.isArray(o.dataKey) ? o.dataKey : [o.dataKey]))), 'reminderState', 'clothingItems']);
   if (!loc) return null;
   const style = `--wall: ${loc.wall}; --floor: ${loc.floor}; --floor-line: ${Math.round(loc.floorLine * 100)}%`;
 
   return html`<main class="stage" style=${style} aria-label=${t('shell.scene', { name: t(`locations.${loc.id}.name`) })}>
     <div class="safe-zone">
       <div class="art-layer" aria-hidden="true">${roomArt(loc)}</div>
-      <${SceneCharacter} spot=${characterSpot(loc.id)} character=${character} />
+      <${SceneCharacter} spot=${characterSpot(loc.id)} character=${character} outfit=${outfitFrom(character.equipped, (id) => appStore.get('clothingItems', id))} />
       <${HitLayer} objects=${objects} settings=${settings} />
     </div>
     <div class="transition-veil" data-active=${veil ? 'true' : 'false'}></div>

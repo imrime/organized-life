@@ -11,4 +11,5 @@ export const unitTests = [
   () => import('./alarms.test.js'),
   () => import('./calendar.test.js'),
   () => import('./reminders.test.js'),
+  () => import('./bedroom.test.js'),
 ];

@@ -43,6 +43,7 @@ export function maybeStartTour() {
   const ui = getUi();
   if (ui.tour || ui.sheet || ui.nightstand || ui.dialog || ui.ringing?.length) return;
   const settings = appStore.profile(PROFILE.settings);
+  if (!settings?.onboarding?.done) return;
   const seen = /** @type {string[]} */ (settings?.toursSeen ?? []);
   if (seen.includes(ui.locationId)) return;
   if (!objectsInRoom(ui.locationId).length) return;

@@ -6,6 +6,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-10-18
+### Added
+- Onboarding on first launch (language, character look, currency/week/time format), followed by the bedroom tour.
+- Bed: sleep plan with wind-down reminder and a "Wake up" alarm kept in sync with the wake time; bedtime routine checklist with streaks; sleep log with quality and 7-night average; "Go to sleep" starts Nightstand mode and the "Good morning" page saves the night in one tap.
+- Desk / notebook: tasks with due dates, reminders, priority, checklists and filters; projects with progress; notes that save while typing.
+- Medication tray: schedules (every day, specific days, every N days, as needed), Taken/Skip with undo, stock and refill reminders, 30-day history.
+- Wardrobe: drawings of your clothes from 30 templates in 16 colours, wear/try on, saved outfits, mark as worn; the character wears the outfit in every scene.
+- Character panel: name, skin tone, hair style and colour, glasses.
+- Quick add for tasks, events, notes, alarms, sleep and due medication.
+- Data & backup in Settings: export/import JSON (merge or replace), storage status, reset all data; alarm volume, Nightstand prompt, next-task strip toggle, replay room tours.
+- Next-task strip and reminders now include tasks, medication doses, refills, routines and the wind-down prompt.
+
+### Changed
+- Seed data v2 adds care routines and starter clothes; existing users skip onboarding.
+
 ## [0.2.0] - 2026-10-17
 ### Added
 - Bedroom scene (portrait placeholder art) with six interactive objects, a paper-doll character and on-object displays (alarm time on the clock face, today's date on the calendar).
@@ -31,6 +46,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Local-first data layer: IndexedDB wrapper, atomic undoable store, schema migrations and versioned seeds.
 - Dual-runtime test harness (browser and Node) with unit and IndexedDB tests; asset tooling (`tools/check_sw_assets.py`, `tools/hash_assets.py`).
 
-[Unreleased]: https://github.com/imrime/organized-life/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/imrime/organized-life/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/imrime/organized-life/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/imrime/organized-life/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/imrime/organized-life/releases/tag/v0.1.0

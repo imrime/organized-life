@@ -129,3 +129,14 @@ export function leafKeys(dict, prefix = '') {
     return [path];
   });
 }
+
+/**
+ * Display name of a record that may be seeded: the user's own text wins, otherwise the translated seed key.
+ * @param {{ name?: string, label?: string, seedKey?: string }|undefined|null} record
+ */
+export function nameOf(record) {
+  if (!record) return '';
+  const own = record.name ?? record.label;
+  if (own) return own;
+  return record.seedKey ? t(record.seedKey) : '';
+}

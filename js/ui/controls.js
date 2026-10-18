@@ -198,3 +198,42 @@ export function useForm(initial) {
   };
   return [value, update, markSaved];
 }
+
+/**
+ * Full-row checkbox (tap anywhere on the row).
+ * @param {{ checked: boolean, label: string, sub?: any, onToggle: () => void, trailing?: any }} props
+ */
+export function CheckRow({ checked, label, sub, onToggle, trailing }) {
+  return html`<div class="row check-row">
+    <button type="button" class="row-hit" role="checkbox" aria-checked=${checked ? 'true' : 'false'} onClick=${onToggle}>
+      <span class=${`check${checked ? ' on' : ''}`} aria-hidden="true">${checked ? '✓' : ''}</span>
+      <span class="main">
+        <span class=${`title${checked ? ' done' : ''}`}>${label}</span>
+        ${sub && html`<span class="subtitle" style="display:block">${sub}</span>`}
+      </span>
+    </button>
+    ${trailing}
+  </div>`;
+}
+
+/**
+ * Up to 5 tap targets for a 1–5 rating, shown as faces or stars. Tapping the current value clears it.
+ * @param {{ value: number|null, onChange: (v: number|null) => void, label: string, symbols?: string[] }} props
+ */
+export function Rating({ value, onChange, label, symbols = ['★', '★', '★', '★', '★'] }) {
+  return html`<div class="rating" role="radiogroup" aria-label=${label}>
+    ${symbols.map(
+      (symbol, i) => html`<button
+        type="button"
+        key=${i}
+        role="radio"
+        aria-checked=${value === i + 1 ? 'true' : 'false'}
+        aria-label=${`${i + 1}`}
+        class=${value !== null && i < value ? 'on' : ''}
+        onClick=${() => onChange(value === i + 1 ? null : i + 1)}
+      >
+        ${symbol}
+      </button>`,
+    )}
+  </div>`;
+}

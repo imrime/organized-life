@@ -4,7 +4,7 @@
 import { VERSION, BUILD } from './version.js';
 import { html, render } from './ui/lib.js';
 import { setLanguage, t } from './core/i18n.js';
-import { openDb, loadAll, writeOps, getMeta, putMeta } from './core/db.js';
+import { openDb, loadAll, writeOps, getMeta, putMeta, setAppDb } from './core/db.js';
 import { createStore, setAppStore } from './core/store.js';
 import { SCHEMA_VERSION, PROFILE, PURGE_AFTER_DAYS, COLLECTIONS, META_STORE } from './core/schema.js';
 import { migrate } from './core/migrations.js';
@@ -24,6 +24,8 @@ import { unlockAudioOnFirstGesture, playChime } from './core/sound.js';
 import { ringAlarms } from './ui/alarm-overlay.js';
 import { openObject } from './ui/navigation.js';
 import './features/register.js';
+import { maybeShowMorning } from './features/sleep/register.js';
+import { startNightstand } from './ui/nightstand.js';
 
 const root = /** @type {HTMLElement} */ (document.getElementById('app'));
 
@@ -52,6 +54,7 @@ async function migrateIfNeeded(db, raw) {
 
 async function boot() {
   const db = await openDb();
+  setAppDb(db);
   const raw = await loadAll(db);
   const firstLaunch = isEmpty(raw);
   const data = await migrateIfNeeded(db, raw);
@@ -88,14 +91,18 @@ async function boot() {
 
   unlockAudioOnFirstGesture();
   await purgeOldReminderState();
-  const watched = ['alarms', 'events', 'tasks', 'reminderState'];
+  const watched = ['alarms', 'events', 'tasks', 'reminderState', 'medications', 'doseLogs', 'routines', 'routineRuns', 'profile'];
   startReminderEngine({
     stateOf: reminderState,
     markFired,
     onAlarm: ringAlarms,
     onReminder: (inst) => {
       playChime(/** @type {number} */ (store.profile(PROFILE.settings)?.alarmVolume ?? 0.6));
-      toast(`🔔 ${inst.title}`, { actionLabel: t('common.open'), onAction: () => inst.objectId && openObject(inst.objectId) });
+      if (inst.data?.action === 'nightstand') {
+        toast(`🌙 ${inst.title}`, { actionLabel: t('nightstand.start'), onAction: () => startNightstand() });
+      } else {
+        toast(`🔔 ${inst.title}`, { actionLabel: t('common.open'), onAction: () => inst.objectId && openObject(inst.objectId) });
+      }
     },
     subscribe: (listener) => store.subscribe((touched) => watched.some((c) => touched.has(c)) && listener()),
   });
@@ -106,6 +113,13 @@ async function boot() {
     const windowId = obj ? obj.window : windowFromTarget(route.target);
     if (windowId) openWindow(windowId, { props: obj?.windowProps ?? {}, sourceObjectId: obj?.id ?? null, page: route.page ?? undefined, params: route.pageId ? { id: route.pageId } : undefined });
   }
+
+  const imported = sessionStorage.getItem('organized-life:imported');
+  if (imported) {
+    sessionStorage.removeItem('organized-life:imported');
+    toast(t('backup.imported', { count: Number(imported) }));
+  }
+  if (!route.target) setTimeout(maybeShowMorning, 800);
 
   if (!firstLaunch && settings.lastSeenVersion !== VERSION) {
     toast(t('app.updated', { version: VERSION }));

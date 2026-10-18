@@ -1,5 +1,8 @@
 // English (default and source language). Keys must stay in sync with ru.js (checked by tests).
-export default {
+import { mergeDictionaries } from './merge.js';
+import bedroom from './en.bedroom.js';
+
+const base = {
   app: {
     name: 'Organized Life',
     tagline: 'Your life as a cosy home: tap objects to organise your day.',
@@ -258,3 +261,5 @@ export default {
     },
   },
 };
+
+export default mergeDictionaries(base, bedroom);
