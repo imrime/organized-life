@@ -91,7 +91,7 @@ async function boot() {
 
   unlockAudioOnFirstGesture();
   await purgeOldReminderState();
-  const watched = ['alarms', 'events', 'tasks', 'reminderState', 'medications', 'doseLogs', 'routines', 'routineRuns', 'profile'];
+  const watched = ['alarms', 'events', 'tasks', 'reminderState', 'medications', 'doseLogs', 'routines', 'routineRuns', 'profile', 'inventoryItems'];
   startReminderEngine({
     stateOf: reminderState,
     markFired,

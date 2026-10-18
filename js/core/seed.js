@@ -3,6 +3,7 @@
 
 import { PROFILE } from './schema.js';
 import { currencyForLocales } from './money.js';
+import { SEED_PRODUCTS, SEED_FINANCE_CATEGORIES, shopCategoryFor, financeCategoryFor, locationFor } from '../features/products/catalog.js';
 
 /** @typedef {import('./store.js').Tx} Tx */
 /** @typedef {{ locales: readonly string[], version: string }} SeedContext */
@@ -134,6 +135,27 @@ export const seedSteps = [
       // People upgrading from 0.2 already went through the bedroom: don't show onboarding again.
       const settings = tx.get('profile', PROFILE.settings);
       if (settings && (settings.toursSeen ?? []).length) tx.setProfile(PROFILE.settings, { onboarding: { step: 4, done: true } });
+    },
+  },
+  {
+    // v0.4.0: product catalogue, finance categories and the Wallet account (docs/spec/04-data-model.md §6).
+    version: 3,
+    run(tx) {
+      SEED_PRODUCTS.forEach(([key, category, unit, qty, shelfLife]) => {
+        const id = `prod-${key}`;
+        if (tx.get('products', id)) return;
+        const shopCategory = shopCategoryFor(category);
+        tx.insert('products', {
+          id, name: '', seedKey: `seed.products.${key}`, category, shopCategory, financeCategoryId: financeCategoryFor(shopCategory),
+          defaultUnit: unit, defaultQty: qty, defaultLocation: locationFor(category), shelfLifeDays: shelfLife, lastPriceMinor: null, favorite: false,
+        });
+      });
+      SEED_FINANCE_CATEGORIES.forEach(([id, kind, icon, color], order) => {
+        if (!tx.get('financeCategories', id)) tx.insert('financeCategories', { id, name: '', seedKey: `seed.finance.${id.slice(4)}`, kind, icon, color, archived: false, order });
+      });
+      if (!tx.get('accounts', 'acc-wallet')) {
+        tx.insert('accounts', { id: 'acc-wallet', name: '', seedKey: 'seed.accounts.wallet', type: 'cash', openingBalanceMinor: 0, openingSet: false, archived: false });
+      }
     },
   },
 ];

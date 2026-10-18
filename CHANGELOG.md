@@ -6,6 +6,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-10-18
+### Added
+- Kitchen and Town are open, each with a room tour and placeholder portrait art.
+- Refrigerator (fridge/freezer), kitchen cabinets (pantry) and bathroom stock: quantities with steppers, expiry dates and period-after-opening, "use soon" grouping, low-stock thresholds with "Add to list", mark as used; identical batches merge.
+- Shopping board: quick add that understands "2 kg apples" / "молоко 1 л", aisles, priorities, price estimate, suggestions from low stock and medication refills.
+- Grocery shop in Town: "From your list", product search and aisles, basket, checkout with prices per line, destination and expiry, and the amount actually paid.
+- Checkout in one step: stock goes to the fridge/pantry/bathroom, list items are ticked off, the payment is split into one transaction per finance category, last prices are remembered; undo is available.
+- Bank / ATM: wallet with opening balance, expenses and income, transactions by day, monthly budget with per-category limits (copied from the previous month), editable categories.
+- Recipe book: recipes with servings scaling, availability from your stock, "Add missing to list", three sample recipes.
+- Dining table: meal diary by day with recent foods and optional nutrition.
+- Product catalogue with 62 starter products and remembered prices; amounts formatted in the device currency.
+- Reminders and next-task strip: expired and expiring food, low stock; badges on the fridge, cabinets, board, grocery shop and ATM.
+- Quick add for meals, expenses and shopping items.
+
+### Changed
+- Seed data v3 adds products, finance categories and the wallet.
+
+### Fixed
+- Month titles in Russian showed "Октябрь 2026 Г." instead of "Октябрь 2026 г.".
+
 ## [0.3.0] - 2026-10-18
 ### Added
 - Onboarding on first launch (language, character look, currency/week/time format), followed by the bedroom tour.
@@ -46,7 +66,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Local-first data layer: IndexedDB wrapper, atomic undoable store, schema migrations and versioned seeds.
 - Dual-runtime test harness (browser and Node) with unit and IndexedDB tests; asset tooling (`tools/check_sw_assets.py`, `tools/hash_assets.py`).
 
-[Unreleased]: https://github.com/imrime/organized-life/compare/v0.3.0...HEAD
+[Unreleased]: https://github.com/imrime/organized-life/compare/v0.4.0...HEAD
+[0.4.0]: https://github.com/imrime/organized-life/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/imrime/organized-life/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/imrime/organized-life/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/imrime/organized-life/releases/tag/v0.1.0

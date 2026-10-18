@@ -17,6 +17,9 @@ const SHORTCUTS = [
   { key: 'note', emoji: '📝', window: 'tasks.main', objectId: 'bedroom.desk-notebook', page: 'note', params: { id: null } },
   { key: 'alarm', emoji: '⏰', window: 'alarms.main', objectId: 'bedroom.alarm-clock', page: 'alarm', params: { id: null } },
   { key: 'sleep', emoji: '🛏️', window: 'sleep.main', objectId: 'bedroom.bed', page: 'log', params: { id: null } },
+  { key: 'meal', emoji: '🍽️', window: 'diary.main', objectId: 'kitchen.dining-table', page: 'meal', params: { id: null } },
+  { key: 'expense', emoji: '💸', window: 'finance.main', objectId: 'town.bank-atm', page: 'tx', params: { id: null, type: 'expense' } },
+  { key: 'shopping', emoji: '🛒', window: 'shopping.main', objectId: 'kitchen.shopping-board', page: 'item', params: { id: null } },
   {
     key: 'dose',
     emoji: '💊',

@@ -1,6 +1,7 @@
 // Russian (optional). Keys must stay in sync with en.js (checked by tests).
 import { mergeDictionaries } from './merge.js';
 import bedroom from './ru.bedroom.js';
+import kitchen from './ru.kitchen.js';
 
 const base = {
   app: {
@@ -262,4 +263,4 @@ const base = {
   },
 };
 
-export default mergeDictionaries(base, bedroom);
+export default mergeDictionaries(base, bedroom, kitchen);

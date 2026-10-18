@@ -8,3 +8,7 @@ import './sleep/register.js';
 import './tasks/register.js';
 import './meds/register.js';
 import './wardrobe/register.js';
+import './inventory/register.js';
+import './shopping/register.js';
+import './diary/register.js';
+import './finance/register.js';
