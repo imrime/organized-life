@@ -15,3 +15,5 @@ import './finance/register.js';
 import './care/register.js';
 import './laundry/register.js';
 import './walks/register.js';
+import './media/register.js';
+import './achievements/register.js';

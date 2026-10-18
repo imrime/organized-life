@@ -456,3 +456,26 @@ button.row:hover { background: var(--surface-2); }
 @keyframes drum-spin { to { transform: rotate(360deg); } }
 .art-layer [data-state="running"] .drum-spin { transform-box: view-box; transform-origin: 902px 960px; animation: drum-spin 2.4s linear infinite; }
 @media (prefers-reduced-motion: reduce) { .art-layer .drum-spin { animation: none; } }
+
+/* ---- Phase 5: entertainment, achievements ---- */
+.media-row { flex-wrap: wrap; }
+.media-row.picked, .project-card.picked { box-shadow: 0 0 0 3px var(--warn) inset; border-radius: var(--radius-m); }
+.media-row.playing .lead { background: color-mix(in srgb, var(--ok) 18%, transparent); }
+.row-actions { display: flex; flex-wrap: wrap; gap: var(--space-2); padding: 0 var(--space-3) var(--space-3) 56px; width: 100%; }
+.pick-btn { margin: var(--space-2) 0 var(--space-3); }
+.play-toggle { font-size: 1.25rem; }
+.project-card { padding: 0; }
+.project-card .row-hit { display: block; width: 100%; padding: var(--space-3) var(--space-4); text-align: left; background: none; border: 0; font: inherit; color: inherit; }
+.project-card .row-actions { padding: 0 var(--space-4) var(--space-3); }
+.project-card .next-step { display: block; margin-top: 4px; font-weight: 600; color: var(--info); }
+.achievement-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: var(--space-2); }
+.achievement { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: var(--space-3) var(--space-2); border: 1px solid var(--line); border-radius: var(--radius-m); background: var(--surface); text-align: center; }
+.achievement .achievement-icon { font-size: 2rem; filter: grayscale(1); opacity: 0.45; }
+.achievement.on .achievement-icon { filter: none; opacity: 1; }
+.achievement .title { font-weight: 650; font-size: 0.9375rem; }
+.achievement .subtitle { font-size: 0.8125rem; color: var(--ink-2); }
+.achievement:not(.on) .title { color: var(--ink-2); }
+.hit[data-object="entertainment.television"] .obj-display { left: 8%; right: 8%; top: 50%; translate: 0 -50%; color: #fff; font-weight: 700; font-size: 3cqw; text-align: center; }
+.hit[data-object="entertainment.television"] .obj-display .line { display: block; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+@keyframes notes-float { 0% { transform: translateY(0); opacity: 0; } 30% { opacity: 1; } 100% { transform: translateY(-40px); opacity: 0; } }
+.art-layer .notes-float { animation: notes-float 2.4s ease-out infinite; }

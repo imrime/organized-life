@@ -17,6 +17,7 @@ import { ProductInput, UnitSelect, qtyText } from '../products/ui.js';
 import { CheckoutPage, lineFor } from '../checkout/page.js';
 import { aisles, estimateTotal, lineEstimate, suggestions } from './model.js';
 import { quickAddShopping, setChecked, saveShoppingItem, deleteShoppingItem, clearChecked, uncheckAll, addShoppingEntries } from './actions.js';
+import { creativeSuggestions } from '../creative/model.js';
 
 /** @typedef {import('./model.js').ShoppingItem} ShoppingItem */
 /** @typedef {{ push: Function, pop: Function, close: Function }} Nav */
@@ -51,12 +52,13 @@ function BoardRoot({ nav }) {
   const items = /** @type {ShoppingItem[]} */ (/** @type {unknown} */ (useCollection('shoppingItems')));
   const inventory = /** @type {any[]} */ (useCollection('inventoryItems'));
   const meds = /** @type {any[]} */ (useCollection('medications'));
+  const projects = /** @type {any[]} */ (useCollection('creativeProjects'));
   const [draft, setDraft] = useState('');
   const [showSuggestions, setShowSuggestions] = useState(true);
   const open = items.filter((i) => !i.checked);
   const checked = items.filter((i) => i.checked);
   const estimate = estimateTotal(open, productOf);
-  const ideas = suggestions({ inventory, meds, shopping: items, productOf });
+  const ideas = [...suggestions({ inventory, meds, shopping: items, productOf }), ...creativeSuggestions(projects, items)];
 
   const add = async (/** @type {Event} */ e) => {
     e.preventDefault();

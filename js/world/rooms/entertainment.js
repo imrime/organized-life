@@ -1,0 +1,80 @@
+// @ts-check
+// Entertainment room geometry (docs/spec/rooms/entertainment.md §1.1). Coordinates are normalised to the 1080 × 1620 safe zone.
+
+/** @type {import('../types.js').SceneObject[]} */
+export const objects = [
+  {
+    id: 'entertainment.television',
+    roomId: 'entertainment',
+    code: 'E1',
+    labelKey: 'objects.entertainment.television.name',
+    descriptionKey: 'objects.entertainment.television.desc',
+    action: 'open_window',
+    window: 'media.screen',
+    hitArea: { x: 0.3, y: 0.06, width: 0.48, height: 0.2 },
+    z: 10,
+    dataKey: ['media'],
+    feedback: 'glow',
+    phase: 5,
+  },
+  {
+    id: 'entertainment.game-console',
+    roomId: 'entertainment',
+    code: 'E2',
+    labelKey: 'objects.entertainment.gameConsole.name',
+    descriptionKey: 'objects.entertainment.gameConsole.desc',
+    action: 'open_window',
+    window: 'media.games',
+    hitArea: { x: 0.38, y: 0.42, width: 0.26, height: 0.08 },
+    z: 20,
+    dataKey: ['media'],
+    feedback: 'led',
+    phase: 5,
+  },
+  {
+    id: 'entertainment.music-player',
+    roomId: 'entertainment',
+    code: 'E3',
+    labelKey: 'objects.entertainment.musicPlayer.name',
+    descriptionKey: 'objects.entertainment.musicPlayer.desc',
+    action: 'open_window',
+    window: 'media.music',
+    hitArea: { x: 0.8, y: 0.62, width: 0.17, height: 0.12 },
+    z: 20,
+    dataKey: ['playlists', 'media'],
+    feedback: 'spin',
+    phase: 5,
+  },
+  {
+    id: 'entertainment.art-supplies',
+    roomId: 'entertainment',
+    code: 'E4',
+    labelKey: 'objects.entertainment.artSupplies.name',
+    descriptionKey: 'objects.entertainment.artSupplies.desc',
+    action: 'open_window',
+    window: 'creative.main',
+    hitArea: { x: 0.76, y: 0.32, width: 0.2, height: 0.28 },
+    z: 10,
+    dataKey: ['creativeProjects'],
+    feedback: 'canvas',
+    phase: 5,
+  },
+  {
+    id: 'entertainment.bookshelf',
+    roomId: 'entertainment',
+    code: 'E5',
+    labelKey: 'objects.entertainment.bookshelf.name',
+    descriptionKey: 'objects.entertainment.bookshelf.desc',
+    action: 'open_window',
+    window: 'media.shelf',
+    hitArea: { x: 0.04, y: 0.2, width: 0.22, height: 0.46 },
+    z: 10,
+    dataKey: ['media', 'mediaCollections', 'achievementUnlocks'],
+    feedback: 'sparkle',
+    phase: 5,
+  },
+];
+
+/** @type {import('../types.js').CharacterSpot} */
+// Moved left of the spec's 0.84 so the character doesn't cover the record player.
+export const character = { anchor: { x: 0.74, y: 0.97 }, height: 0.3, pose: 'stand' };

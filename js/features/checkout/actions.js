@@ -9,6 +9,7 @@ import { convert } from '../../core/units.js';
 import { ensureProductTx } from '../products/model.js';
 import { upsertInventoryTx } from '../inventory/actions.js';
 import { splitByCategory } from './model.js';
+import { bumpStatTx } from '../achievements/stats.js';
 
 /** @typedef {import('./model.js').CheckoutLine} CheckoutLine */
 
@@ -53,6 +54,7 @@ export function checkout({ lines, actualTotalMinor, accountId, date }) {
     for (const group of splitByCategory(lines, actualTotalMinor)) {
       tx.insert('transactions', { accountId, type: 'expense', amountMinor: group.amountMinor, categoryId: group.financeCategoryId, date, note: '', source: { type: 'grocery', batchId } });
     }
+    bumpStatTx(tx, 'shoppingChecked', lines.length);
     return batchId;
   });
 }

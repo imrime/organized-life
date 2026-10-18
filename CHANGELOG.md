@@ -6,6 +6,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.6.0] - 2026-10-18
+### Added
+- Entertainment room is open, with a room tour and placeholder portrait art. It has no overdue states, red badges or reminders on purpose.
+- Television: films and series across Watchlist, Watching and Watched; +1 episode, ratings, where to watch, notes; "What should I watch tonight?" picks from the watchlist; the TV shows what you're watching.
+- Game console: Playing, Backlog, Paused, Completed (and Dropped) with platform filters, hours played and "Pick something to play"; the console light is on while you play.
+- Music player: a tracker (no audio) for playlists with ordered tracks and moods, albums and favourites; "Now playing" spins the record player.
+- Art supplies: creative project board (Ideas, In progress, Done) with the next step on each card, materials checklist, missing materials to the shopping list (also offered as shopping suggestions), "Inspire me".
+- Bookshelf: books (To read, Reading, Read with page progress), collections mixing any media and projects, favourites by kind, and achievements.
+- Achievements: 29 achievements across the whole home, checked a second after changes; one toast per batch, trophies on the bookshelf and a sparkle until you look.
+
+### Changed
+- Shopping items ticked off or bought are counted for the "List master" achievement.
+
 ## [0.5.0] - 2026-10-18
 ### Added
 - Bathroom is open, with a room tour and placeholder portrait art.
@@ -84,7 +97,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Local-first data layer: IndexedDB wrapper, atomic undoable store, schema migrations and versioned seeds.
 - Dual-runtime test harness (browser and Node) with unit and IndexedDB tests; asset tooling (`tools/check_sw_assets.py`, `tools/hash_assets.py`).
 
-[Unreleased]: https://github.com/imrime/organized-life/compare/v0.5.0...HEAD
+[Unreleased]: https://github.com/imrime/organized-life/compare/v0.6.0...HEAD
+[0.6.0]: https://github.com/imrime/organized-life/compare/v0.5.0...v0.6.0
 [0.5.0]: https://github.com/imrime/organized-life/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/imrime/organized-life/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/imrime/organized-life/compare/v0.2.0...v0.3.0

@@ -14,4 +14,5 @@ export const unitTests = [
   () => import('./bedroom.test.js'),
   () => import('./kitchen.test.js'),
   () => import('./bathroom.test.js'),
+  () => import('./leisure.test.js'),
 ];

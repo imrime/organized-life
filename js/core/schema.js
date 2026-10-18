@@ -67,6 +67,7 @@ export const PROFILE = /** @type {const} */ ({
   character: 'character',
   sleepPlan: 'sleepPlan',
   fitness: 'fitness',
+  stats: 'stats',
 });
 
 /** Soft-deleted records older than this are purged at startup. */

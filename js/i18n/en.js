@@ -3,6 +3,7 @@ import { mergeDictionaries } from './merge.js';
 import bedroom from './en.bedroom.js';
 import kitchen from './en.kitchen.js';
 import bathroom from './en.bathroom.js';
+import leisure from './en.leisure.js';
 
 const base = {
   app: {
@@ -264,4 +265,4 @@ const base = {
   },
 };
 
-export default mergeDictionaries(base, bedroom, kitchen, bathroom);
+export default mergeDictionaries(base, bedroom, kitchen, bathroom, leisure);

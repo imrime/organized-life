@@ -6,6 +6,7 @@ import { nameOf } from '../../core/i18n.js';
 import { convert } from '../../core/units.js';
 import { ensureProductTx } from '../products/model.js';
 import { findOpenItem, parseQuickAdd } from './model.js';
+import { bumpStatTx } from '../achievements/stats.js';
 
 /** @typedef {import('./model.js').ShoppingEntry} ShoppingEntry */
 
@@ -61,7 +62,10 @@ export function addShoppingEntries(entries) {
 
 /** @param {string} id @param {boolean} checked */
 export function setChecked(id, checked) {
-  return appStore.mutate('shopping.check', (tx) => tx.patch('shoppingItems', id, { checked, checkedAt: checked ? new Date().toISOString() : null }));
+  return appStore.mutate('shopping.check', (tx) => {
+    if (checked) bumpStatTx(tx, 'shoppingChecked');
+    return tx.patch('shoppingItems', id, { checked, checkedAt: checked ? new Date().toISOString() : null });
+  });
 }
 
 /**
