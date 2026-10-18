@@ -8,12 +8,14 @@ import { kitchenArt } from './kitchen.js';
 import { townArt } from './town.js';
 import { bathroomArt } from './bathroom.js';
 import { entertainmentArt } from './entertainment.js';
+import { studyArt } from './study.js';
+import { gymArt } from './gym.js';
 import { bareRoom } from './common.js';
 
 /** @typedef {import('../../world/locations.js').Location} Location */
 
 /** @type {Record<string, (loc: Location) => any>} rooms register detailed art here as they ship */
-const ROOM_ART = { bedroom: bedroomArt, kitchen: kitchenArt, bathroom: bathroomArt, entertainment: entertainmentArt, town: townArt };
+const ROOM_ART = { bedroom: bedroomArt, kitchen: kitchenArt, bathroom: bathroomArt, entertainment: entertainmentArt, study: studyArt, gym: gymArt, town: townArt };
 
 /** @param {Location} loc */
 export function roomArt(loc) {

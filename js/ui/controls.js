@@ -250,7 +250,7 @@ export function ProgressRing({ value, size = 120, label, children }) {
     aria-valuemin="0" aria-valuemax="100" aria-valuenow=${Math.round(v * 100)}>
     <svg viewBox="0 0 100 100" aria-hidden="true" focusable="false">
       <circle cx="50" cy="50" r=${r} class="ring-track" />
-      <circle cx="50" cy="50" r=${r} class="ring-value" stroke-dasharray=${`${c * v} ${c}`} transform="rotate(-90 50 50)" />
+      ${v > 0.004 && html`<circle cx="50" cy="50" r=${r} class="ring-value" stroke-dasharray=${`${c * v} ${c}`} transform="rotate(-90 50 50)" />`}
     </svg>
     <div class="ring-center">${children}</div>
   </div>`;

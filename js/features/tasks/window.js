@@ -9,6 +9,7 @@ import { matchesQuery } from '../../core/text.js';
 import { SheetHeader, SheetBody, SheetFooter, DoneFooter } from '../../ui/sheet.js';
 import { Field, Segmented, Select, TextInput, TextArea, DateTimeInput, Switch, useForm, useFieldId } from '../../ui/controls.js';
 import { useCollection } from '../../ui/hooks.js';
+import { appStore } from '../../core/store.js';
 import { undoToast, toast } from '../../ui/toast.js';
 import { confirmDialog, choiceDialog } from '../../ui/dialog.js';
 import { icon } from '../../ui/icons.js';
@@ -28,7 +29,7 @@ const session = { tab: 'tasks', filter: /** @type {'today'|'upcoming'|'all'|'don
 
 /** @param {{ page: { id: string, params?: Record<string, any> }|null, nav: Nav, props: Record<string, any> }} args */
 export default function TasksWindow({ page, nav, props }) {
-  if (page?.id === 'task') return html`<${TaskPage} id=${page.params?.id ?? null} projectId=${page.params?.projectId ?? null} nav=${nav} />`;
+  if (page?.id === 'task') return html`<${TaskPage} id=${page.params?.id ?? null} projectId=${page.params?.projectId ?? null} defaults=${page.params?.defaults} nav=${nav} />`;
   if (page?.id === 'project') return html`<${ProjectPage} id=${page.params?.id ?? null} nav=${nav} />`;
   if (page?.id === 'note') return html`<${NotePage} id=${page.params?.id ?? null} nav=${nav} />`;
   return html`<${DeskRoot} nav=${nav} initialTab=${props.tab} />`;
@@ -68,6 +69,12 @@ function dueLabel(task) {
   return task.dueTime ? `${day} ${formatTime(task.dueTime)}` : day;
 }
 
+/** Study module chip (colour + code or name). @param {string} moduleId */
+function moduleChip(moduleId) {
+  const m = /** @type {any} */ (appStore.get('studyModules', moduleId));
+  return m ? html`<span class="chip" style=${`--chip:${COLORS[m.color] ?? '#6B625B'}`}>${m.code || m.name}</span>` : null;
+}
+
 /** @param {{ task: Task, nav: Nav, projects: Project[] }} props */
 export function TaskRow({ task, nav, projects }) {
   const done = task.status === 'done';
@@ -90,6 +97,7 @@ export function TaskRow({ task, nav, projects }) {
           ${project && html`<span class="chip" style=${`--chip:${COLORS[project.color] ?? '#6B625B'}`}>${project.name}</span>`}
           ${progress && html`<span>☑ ${progress.done}/${progress.total}</span>`}
           ${task.context === 'homework' && html`<span>📚</span>`}
+          ${task.moduleId && moduleChip(task.moduleId)}
         </span>
       </span>
     </button>
@@ -127,7 +135,7 @@ function TasksTab({ nav }) {
           }}>${t(`tasks.filters.${f}`)}</button>`,
         )}
         <span class="chip-sep"></span>
-        ${[null, 'personal', 'homework'].map(
+        ${[null, 'personal', 'homework', ...(tasks.some((x) => x.context === 'study') ? ['study'] : [])].map(
           (c) => html`<button type="button" class="chip-btn" aria-pressed=${context === c ? 'true' : 'false'} onClick=${() => {
             session.context = c;
             setContext(c);
@@ -152,19 +160,24 @@ function TasksTab({ nav }) {
 
 const REMINDERS = [null, 0, 10, 60, 1440];
 
-/** @param {{ id: string|null, projectId: string|null, nav: Nav }} props */
-function TaskPage({ id, projectId, nav }) {
+/**
+ * Shared task page (desk, calendar, study). `defaults` presets a new task, e.g. { context: 'study', moduleId }.
+ * @param {{ id: string|null, projectId: string|null, nav: Nav, defaults?: Record<string, any> }} props
+ */
+export function TaskPage({ id, projectId, nav, defaults = {} }) {
   const tasks = /** @type {Task[]} */ (/** @type {unknown} */ (useCollection('tasks')));
   const projects = /** @type {Project[]} */ (/** @type {unknown} */ (useCollection('projects')));
+  const modules = /** @type {any[]} */ (useCollection('studyModules')).filter((m) => !m.archived);
   const existing = id ? tasks.find((x) => x.id === id) : undefined;
   const [form, update, markSaved] = useForm({
     title: existing?.title ?? '',
     notes: existing?.notes ?? '',
-    dueDate: existing?.dueDate ?? '',
+    dueDate: existing?.dueDate ?? defaults.dueDate ?? '',
     dueTime: existing?.dueTime ?? '',
     reminderOffsetMin: existing ? existing.reminderOffsetMin : null,
     priority: existing?.priority ?? 'normal',
-    context: existing?.context ?? 'personal',
+    context: existing?.context ?? defaults.context ?? 'personal',
+    moduleId: existing?.moduleId ?? defaults.moduleId ?? '',
     projectId: existing?.projectId ?? projectId ?? '',
     status: existing?.status ?? 'todo',
     checklist: (existing?.checklist ?? []).map((c) => ({ ...c })),
@@ -234,9 +247,20 @@ function TaskPage({ id, projectId, nav }) {
       <//>
       <${Field} label=${t('tasks.fields.context')}>
         <${Segmented} label=${t('tasks.fields.context')} value=${form.context}
-          options=${['personal', 'homework'].map((v) => ({ value: v, label: t(`tasks.contexts.${v}`) }))}
-          onChange=${(/** @type {any} */ context) => update({ context })} />
+          options=${['personal', 'homework', ...(modules.length || form.context === 'study' ? ['study'] : [])].map((v) => ({ value: v, label: t(`tasks.contexts.${v}`) }))}
+          onChange=${(/** @type {any} */ context) => update({ context, moduleId: context === 'study' ? form.moduleId || modules[0]?.id || '' : '' })} />
       <//>
+      ${form.context === 'study' &&
+      html`<div class="two-cols">
+        <${Field} label=${t('study.module')} error=${errors.moduleId && t(errors.moduleId)}>
+          <${Select} label=${t('study.module')} value=${form.moduleId}
+            options=${[{ value: '', label: t('study.chooseModule') }, ...modules.map((m) => ({ value: m.id, label: m.name }))]}
+            onChange=${(/** @type {string} */ moduleId) => update({ moduleId })} />
+        <//>
+        <${Field} label=${t('study.grade')} optional>
+          <${TextInput} value=${form.grade} maxLength=${20} onInput=${(/** @type {string} */ grade) => update({ grade })} />
+        <//>
+      </div>`}
       <${Field} label=${t('tasks.fields.project')} htmlFor=${ids.proj} optional>
         <${Select} id=${ids.proj} value=${form.projectId}
           options=${[{ value: '', label: t('tasks.noProject') }, ...projects.filter((p) => !p.archived || p.id === form.projectId).map((p) => ({ value: p.id, label: p.name }))]}
@@ -402,8 +426,11 @@ function NotesTab({ nav }) {
   `;
 }
 
-/** Note editor: autosaves 500 ms after typing stops (and on leaving). @param {{ id: string|null, nav: Nav }} props */
-function NotePage({ id, nav }) {
+/**
+ * Note editor: autosaves 500 ms after typing stops (and on leaving). New notes take `context`/`moduleId` (study folders).
+ * @param {{ id: string|null, nav: Nav, context?: string, moduleId?: string|null }} props
+ */
+export function NotePage({ id, nav, context = 'personal', moduleId = null }) {
   const notes = /** @type {Note[]} */ (/** @type {unknown} */ (useCollection('notes')));
   const noteId = useRef(id ?? newId());
   const existing = notes.find((n) => n.id === noteId.current);
@@ -419,7 +446,7 @@ function NotePage({ id, nav }) {
     const json = JSON.stringify(value);
     if (json === saved.current || (!value.title.trim() && !value.body.trim() && !hasNote(noteId.current, notes))) return;
     saved.current = json;
-    saveNote(value, noteId.current);
+    saveNote(value, noteId.current, context, moduleId);
   };
   useEffect(() => () => flush(), []);
   const change = (/** @type {Partial<typeof form>} */ patch) => {

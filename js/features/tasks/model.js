@@ -84,6 +84,7 @@ export function validateTask(form) {
   if (form.dueDate && !isValidLocalDate(form.dueDate)) errors.dueDate = 'form.errors.date';
   if (form.dueTime && !form.dueDate) errors.dueTime = 'tasks.errors.timeNeedsDate';
   else if (form.dueTime && !isValidTime(form.dueTime)) errors.dueTime = 'form.errors.time';
+  if (form.context === 'study' && !form.moduleId) errors.moduleId = 'study.errors.module';
   return errors;
 }
 

@@ -4,6 +4,7 @@
 import { addDays, startOfWeek } from '../../core/time.js';
 import { streak, runId } from '../routines/model.js';
 import { monthOf, shiftMonth, monthTotals } from '../finance/model.js';
+import { anyRecordSet } from '../workouts/model.js';
 
 /**
  * @typedef {{
@@ -99,17 +100,17 @@ export const ACHIEVEMENTS = [
   { id: 'maker', icon: '🎨', progress: (d) => of(count(d.all('creativeProjects'), (p) => p.status === 'done'), 3) },
   { id: 'deep_focus', icon: '🎯', progress: (d) => of(count(d.all('focusSessions'), (s) => s.status === 'completed'), 10) },
   { id: 'scholar', icon: '🎓', progress: (d) => of(count(d.all('tasks'), (x) => x.context === 'study' && x.status === 'done'), 10) },
-  { id: 'first_rep', icon: '💪', progress: (d) => of(count(d.all('workoutSessions'), (s) => s.status === 'done'), 1) },
+  { id: 'first_rep', icon: '💪', progress: (d) => of(count(d.all('workoutSessions'), (s) => s.status === 'completed'), 1) },
   {
     id: 'iron_habit',
     icon: '🏋️',
     progress: (d) => {
-      const dates = d.all('workoutSessions').filter((s) => s.status === 'done').map((s) => s.date);
+      const dates = d.all('workoutSessions').filter((s) => s.status === 'completed').map((s) => s.date);
       const settings = d.profile('settings');
       return of(goalWeeks(dates, d.profile('fitness')?.weeklyGoal ?? 0, d.today, settings?.weekStart ?? 1), 4);
     },
   },
-  { id: 'new_record', icon: '🏆', progress: (d) => of(d.all('workoutSessions').some((s) => (s.records ?? []).length > 0) ? 1 : 0, 1) },
+  { id: 'new_record', icon: '🏆', progress: (d) => of(anyRecordSet(/** @type {any} */ (d.all('workoutSessions'))) ? 1 : 0, 1) },
   { id: 'explorer', icon: '🚶', progress: (d) => of(count(d.all('walks'), (w) => w.status === 'done'), 10) },
   {
     id: 'wanderer',

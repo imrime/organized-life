@@ -17,3 +17,6 @@ import './laundry/register.js';
 import './walks/register.js';
 import './media/register.js';
 import './achievements/register.js';
+import './study/register.js';
+import './focus/register.js';
+import './workouts/register.js';

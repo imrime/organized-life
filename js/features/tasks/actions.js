@@ -51,8 +51,9 @@ export function saveTask(form, id) {
       projectId: form.projectId || null,
       checklist: form.checklist.filter((/** @type {any} */ c) => c.label.trim()).map((/** @type {any} */ c) => ({ id: c.id ?? newId(), label: c.label.trim(), done: Boolean(c.done) })),
       grade: form.grade ?? '',
+      moduleId: form.context === 'study' ? form.moduleId || null : null,
     };
-    return id ? tx.patch('tasks', id, fields) : tx.insert('tasks', { ...fields, moduleId: null, order: tx.all('tasks').length });
+    return id ? tx.patch('tasks', id, fields) : tx.insert('tasks', { ...fields, order: tx.all('tasks').length });
   });
 }
 
@@ -113,13 +114,14 @@ export function deleteProject(id, withTasks) {
  * @param {{ title: string, body: string, pinned: boolean }} form
  * @param {string|null} id
  * @param {string} [context]
+ * @param {string|null} [moduleId] study notes belong to a module folder (null = General)
  */
-export function saveNote(form, id, context = 'personal') {
+export function saveNote(form, id, context = 'personal', moduleId = null) {
   return appStore.mutate(
     'notes.save',
     (tx) => {
       const fields = { title: form.title, body: form.body, pinned: form.pinned };
-      return id && tx.get('notes', id) ? tx.patch('notes', id, fields) : tx.insert('notes', { ...fields, id: id ?? undefined, context, moduleId: null });
+      return id && tx.get('notes', id) ? tx.patch('notes', id, fields) : tx.insert('notes', { ...fields, id: id ?? undefined, context, moduleId });
     },
     { quiet: false },
   );

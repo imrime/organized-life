@@ -6,6 +6,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.7.0] - 2026-10-18
+### Added
+- Study and Gym are open, with room tours and placeholder portrait art. Both can be hidden in Settings → Places (or shown again from the map); data is never removed.
+- Computer: modules with colour, code, teacher, project links and a "next action"; assignments grouped by Overdue, This week, Later, No date and Submitted. Assignments are study tasks, so they also appear on the desk and in the calendar.
+- Planner: weekly timetable by weekday plus a week overview; classes are weekly calendar events until the term ends; deadlines combine assignments and deadline events; exams with countdowns and reminders.
+- Study bookshelf: a folder per module plus General, with reading list, resources (open link, copy citation) and module notes.
+- Desk planner: focus timer (25/5, 50/10 or custom) that survives reloads, pause and stop, break and "back to work" prompts with a chime, task picking and marking done, completion log with today and week totals.
+- Bench / mat: today's planned workout with "last time" hints, live session with sets, reps, weight or time, a rest timer with ±15 s, substitutions, and a summary with volume and new personal records; plans scheduled on weekdays.
+- Weights: 43 starter exercises with how-to text, equipment and muscle filters, "Suggested for you" for muscles you trained least this week, substitutions, custom exercises, add to today or to a plan.
+- Progress board: weekly goal ring and streak, 12-week heatmap including walks, workout history with edits, personal records (heaviest, Epley 1RM, most reps, longest time) and trend charts.
+- Next-task strip: focus session and workout in progress.
+
+### Changed
+- Seed data v5 adds the exercise library.
+- Tasks can belong to a study module and carry a grade; the desk gets a Study filter.
+
 ## [0.6.0] - 2026-10-18
 ### Added
 - Entertainment room is open, with a room tour and placeholder portrait art. It has no overdue states, red badges or reminders on purpose.
@@ -97,7 +113,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Local-first data layer: IndexedDB wrapper, atomic undoable store, schema migrations and versioned seeds.
 - Dual-runtime test harness (browser and Node) with unit and IndexedDB tests; asset tooling (`tools/check_sw_assets.py`, `tools/hash_assets.py`).
 
-[Unreleased]: https://github.com/imrime/organized-life/compare/v0.6.0...HEAD
+[Unreleased]: https://github.com/imrime/organized-life/compare/v0.7.0...HEAD
+[0.7.0]: https://github.com/imrime/organized-life/compare/v0.6.0...v0.7.0
 [0.6.0]: https://github.com/imrime/organized-life/compare/v0.5.0...v0.6.0
 [0.5.0]: https://github.com/imrime/organized-life/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/imrime/organized-life/compare/v0.3.0...v0.4.0

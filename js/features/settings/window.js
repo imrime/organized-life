@@ -13,6 +13,17 @@ import { appStore } from '../../core/store.js';
 import { updateSettings } from './actions.js';
 import { DataSection, ResetPage } from './data.js';
 import { toast } from '../../ui/toast.js';
+import { LOCATIONS } from '../../world/locations.js';
+import { getUi } from '../../ui/ui-state.js';
+import { goToLocation } from '../../ui/navigation.js';
+
+/** Shows or hides an optional room (Study, Gym); data is never touched. Leaving a hidden room goes to the bedroom. @param {string} id @param {boolean} on */
+async function setRoomVisible(id, on) {
+  const settings = /** @type {Record<string, any>} */ (appStore.profile(PROFILE.settings) ?? {});
+  await updateSettings({ optionalRooms: { ...(settings.optionalRooms ?? {}), [id]: on } });
+  if (!on && getUi().locationId === id) await goToLocation('bedroom');
+  toast(t(on ? 'settings.roomShown' : 'settings.roomHidden', { room: t(`locations.${id}.name`) }));
+}
 
 /** @param {{ page: { id: string }|null, nav: { push: Function, pop: Function, close: Function } }} args */
 export default function SettingsWindow({ page, nav }) {
@@ -139,6 +150,11 @@ function SettingsRoot({ nav }) {
       <section class="section">
         <h3 class="section-title">${t('settings.sections.places')}</h3>
         <div class="group">
+          ${LOCATIONS.filter((loc) => loc.optional && loc.shipped).map(
+            (loc) => html`<div class="row" key=${loc.id}><span class="main title">${loc.emoji} ${t(`locations.${loc.id}.name`)}</span>
+              <${Switch} label=${t('settings.showRoom', { room: t(`locations.${loc.id}.name`) })} checked=${settings.optionalRooms?.[loc.id] !== false}
+                onChange=${(/** @type {boolean} */ on) => setRoomVisible(loc.id, on)} /></div>`,
+          )}
           <button type="button" class="row" onClick=${async () => { await updateSettings({ toursSeen: [] }); toast(t('settings.toursReset')); }}>
             <span class="main"><span class="title">${t('settings.replayTours')}</span>
               <span class="subtitle" style="display:block">${t('settings.replayToursHelp')}</span></span>

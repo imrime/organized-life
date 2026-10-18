@@ -4,6 +4,7 @@
 import { PROFILE } from './schema.js';
 import { currencyForLocales } from './money.js';
 import { SEED_PRODUCTS, SEED_FINANCE_CATEGORIES, shopCategoryFor, financeCategoryFor, locationFor } from '../features/products/catalog.js';
+import { SEED_EXERCISES } from '../features/workouts/catalog.js';
 
 /** @typedef {import('./store.js').Tx} Tx */
 /** @typedef {{ locales: readonly string[], version: string }} SeedContext */
@@ -163,6 +164,20 @@ export const seedSteps = [
     version: 4,
     run(tx) {
       if (!tx.get('places', 'place-park')) tx.insert('places', { id: 'place-park', name: '', seedKey: 'seed.places.park', notes: '', favorite: true });
+    },
+  },
+  {
+    // v0.7.0: exercise library for the gym (docs/spec/04-data-model.md §6).
+    version: 5,
+    run(tx) {
+      SEED_EXERCISES.forEach(([key, type, metric, equipment, muscles, subs]) => {
+        const id = `ex-${key}`;
+        if (tx.get('exercises', id)) return;
+        tx.insert('exercises', {
+          id, name: '', seedKey: `seed.exercises.${key}.name`, howToKey: `seed.exercises.${key}.how`, type, metric, equipment, muscles,
+          substitutionIds: subs.map((k) => `ex-${k}`), custom: false, hidden: false,
+        });
+      });
     },
   },
 ];
