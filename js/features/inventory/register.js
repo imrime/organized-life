@@ -1,5 +1,5 @@
 // @ts-check
-// Fridge and cabinets: expiry/low-stock badges, art state, 09:00 expiry digest, strip items.
+// Fridge, cabinets and bathroom cabinet: expiry/low-stock badges, art state, 09:00 expiry digest, strip items.
 
 import { appStore } from '../../core/store.js';
 import { t } from '../../core/i18n.js';
@@ -25,6 +25,16 @@ registerVisualState('kitchen.refrigerator', () => (items().some((i) => i.locatio
 
 registerBadge('kitchen.cabinets', () => {
   const low = items().filter((i) => i.location === 'pantry' && isLow(i)).length;
+  return low ? { text: String(low), tone: 'warn', aria: t('inventory.badgeLow', { count: low }) } : null;
+});
+
+// Bathroom cabinet: expired products (alert) take precedence over low stock (warn).
+registerBadge('bathroom.cabinet', () => {
+  const day = today();
+  const bath = items().filter((i) => i.location === 'bathroom');
+  const expired = bath.filter((i) => expiryState(i, day) === 'expired').length;
+  if (expired) return { text: String(expired), tone: 'alert', aria: t('inventory.badgeExpired', { count: expired }) };
+  const low = bath.filter(isLow).length;
   return low ? { text: String(low), tone: 'warn', aria: t('inventory.badgeLow', { count: low }) } : null;
 });
 

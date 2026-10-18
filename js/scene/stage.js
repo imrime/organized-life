@@ -7,7 +7,7 @@ import { t } from '../core/i18n.js';
 import { locationById } from '../world/locations.js';
 import { objectsInRoom, characterSpot } from '../world/objects.js';
 import { useUi } from '../ui/ui-state.js';
-import { useProfile, useStoreChanges } from '../ui/hooks.js';
+import { useProfile, useStoreChanges, useNow } from '../ui/hooks.js';
 import { PROFILE } from '../core/schema.js';
 import { HitLayer } from './hit-layer.js';
 import { SceneCharacter, outfitFrom } from './character.js';
@@ -19,6 +19,8 @@ export function Stage({ locationId, settings }) {
   const loc = locationById(locationId) ?? locationById('bedroom');
   const { veil, banner } = useUi();
   const character = useProfile(PROFILE.character);
+  // Minute refresh for time-based object states (washing machine, running walk).
+  useNow();
   const objects = loc ? objectsInRoom(loc.id) : [];
   // Re-render art and badges whenever data behind this room's objects changes.
   useStoreChanges([...new Set(objects.flatMap((o) => (Array.isArray(o.dataKey) ? o.dataKey : [o.dataKey]))), 'reminderState', 'clothingItems']);

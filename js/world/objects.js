@@ -3,13 +3,14 @@
 
 import * as bedroom from './rooms/bedroom.js';
 import * as kitchen from './rooms/kitchen.js';
+import * as bathroom from './rooms/bathroom.js';
 import * as town from './rooms/town.js';
 
 /** @typedef {import('./types.js').SceneObject} SceneObject */
 /** @typedef {import('./types.js').CharacterSpot} CharacterSpot */
 
 /** @type {Record<string, { objects: SceneObject[], character: CharacterSpot }>} rooms register here as they ship */
-const ROOMS = { bedroom, kitchen, town };
+const ROOMS = { bedroom, kitchen, bathroom, town };
 
 /** @type {SceneObject[]} */
 export const OBJECTS = Object.values(ROOMS).flatMap((room) => room.objects);

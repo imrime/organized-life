@@ -81,9 +81,9 @@ export function HabitRow({ routine, last, onOpen }) {
 
 /**
  * Routine editor page: name, steps, days, reminder, enabled.
- * @param {{ routine: Routine, nav: { pop: Function }, allowSteps?: boolean, showReminder?: boolean }} props
+ * @param {{ routine: Routine, nav: { pop: Function }, allowSteps?: boolean, showReminder?: boolean, onDelete?: () => void }} props
  */
-export function RoutineEditor({ routine, nav, allowSteps = true, showReminder = true }) {
+export function RoutineEditor({ routine, nav, allowSteps = true, showReminder = true, onDelete }) {
   const settings = useProfile(PROFILE.settings);
   const [form, update, markSaved] = useForm({
     name: nameOf(routine),
@@ -169,6 +169,7 @@ export function RoutineEditor({ routine, nav, allowSteps = true, showReminder = 
       </div>
     <//>
     <${SheetFooter}>
+      ${onDelete && html`<button type="button" class="btn btn-danger" onClick=${() => { markSaved(); onDelete(); }}>${t('common.delete')}</button>`}
       <span class="grow"></span>
       <button type="button" class="btn btn-primary" onClick=${onSave}>${t('common.save')}</button>
     <//>

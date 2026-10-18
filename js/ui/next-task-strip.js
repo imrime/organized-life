@@ -60,7 +60,7 @@ function dismiss(key) {
 
 export function NextTaskStrip() {
   const [, force] = useReducer((n) => n + 1, 0);
-  useStoreChanges(['alarms', 'events', 'tasks', 'reminderState', 'profile', 'medications', 'doseLogs', 'routines', 'routineRuns', 'inventoryItems']);
+  useStoreChanges(['alarms', 'events', 'tasks', 'reminderState', 'profile', 'medications', 'doseLogs', 'routines', 'routineRuns', 'inventoryItems', 'laundryLoads', 'laundryExtras', 'clothingItems', 'walks']);
   useEffect(() => {
     /** @type {ReturnType<typeof setTimeout>} */
     let timer;

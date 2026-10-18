@@ -12,3 +12,6 @@ import './inventory/register.js';
 import './shopping/register.js';
 import './diary/register.js';
 import './finance/register.js';
+import './care/register.js';
+import './laundry/register.js';
+import './walks/register.js';

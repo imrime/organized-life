@@ -158,6 +158,13 @@ export const seedSteps = [
       }
     },
   },
+  {
+    // v0.5.0: the park as the first place for walks (docs/spec/04-data-model.md §6).
+    version: 4,
+    run(tx) {
+      if (!tx.get('places', 'place-park')) tx.insert('places', { id: 'place-park', name: '', seedKey: 'seed.places.park', notes: '', favorite: true });
+    },
+  },
 ];
 
 export const SEED_VERSION = Math.max(...seedSteps.map((s) => s.version));

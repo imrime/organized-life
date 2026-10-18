@@ -428,3 +428,31 @@ button.row:hover { background: var(--surface-2); }
 .ing-unit .select { padding-right: 22px; background-position: right 6px center; }
 .step-edit { display: grid; grid-template-columns: 20px 1fr 40px; gap: 6px; align-items: start; margin-bottom: 6px; }
 .step-edit b { padding-top: 12px; color: var(--accent); }
+
+/* ---- Phase 4: bathroom, laundry, clothing shop, park ---- */
+.btn-danger-text { color: var(--accent); background: none; border-color: transparent; }
+.banner.small { font-size: 0.875rem; font-weight: 500; }
+.footer-note { font-weight: 650; }
+.progress-ring { position: relative; flex: none; }
+.progress-ring svg { width: 100%; height: 100%; display: block; }
+.progress-ring .ring-track { fill: none; stroke: var(--surface-2); stroke-width: 9; }
+.progress-ring .ring-value { fill: none; stroke: var(--info); stroke-width: 9; stroke-linecap: round; transition: stroke-dasharray 0.4s var(--ease); }
+.progress-ring .ring-center { position: absolute; inset: 0; display: grid; place-content: center; text-align: center; line-height: 1.1; }
+.progress-ring .ring-center b { font-size: 1.75rem; font-variant-numeric: tabular-nums; }
+.progress-ring .ring-center span { font-size: 0.8125rem; color: var(--ink-2); }
+.machine-card { display: flex; align-items: center; gap: var(--space-4); border-left-color: var(--info); }
+.machine-card.done { border-left-color: var(--ok); }
+.machine-info { min-width: 0; }
+.done-mark { flex: none; display: grid; place-items: center; width: 64px; height: 64px; border-radius: 50%; background: color-mix(in srgb, var(--ok) 16%, transparent); color: var(--ok); font-size: 2rem; font-weight: 700; }
+.laundry-row .laundry-icon { flex: none; width: 40px; height: 40px; display: grid; place-items: center; }
+.laundry-row .laundry-icon .garment-icon { width: 40px; height: 40px; }
+.swatch-dot { flex: none; width: 28px; height: 28px; margin: 6px; border-radius: 50%; border: 2px solid var(--ink); }
+.stepper.big { font-size: 1.125rem; }
+.stepper.big button { min-width: 52px; min-height: 48px; }
+.stepper.big .stepper-value { min-width: 96px; text-align: center; }
+.shop-preview .preview-figure { width: 140px; height: 260px; }
+.shop-preview .title { font-weight: 650; font-size: 1.125rem; margin: 0; }
+.hero-art { font-size: 4rem; }
+@keyframes drum-spin { to { transform: rotate(360deg); } }
+.art-layer [data-state="running"] .drum-spin { transform-box: view-box; transform-origin: 902px 960px; animation: drum-spin 2.4s linear infinite; }
+@media (prefers-reduced-motion: reduce) { .art-layer .drum-spin { animation: none; } }

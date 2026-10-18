@@ -26,6 +26,7 @@ import { openObject } from './ui/navigation.js';
 import './features/register.js';
 import { maybeShowMorning } from './features/sleep/register.js';
 import { startNightstand } from './ui/nightstand.js';
+import { settleLoads } from './features/laundry/actions.js';
 
 const root = /** @type {HTMLElement} */ (document.getElementById('app'));
 
@@ -91,7 +92,8 @@ async function boot() {
 
   unlockAudioOnFirstGesture();
   await purgeOldReminderState();
-  const watched = ['alarms', 'events', 'tasks', 'reminderState', 'medications', 'doseLogs', 'routines', 'routineRuns', 'profile', 'inventoryItems'];
+  settleLoads();
+  const watched = ['alarms', 'events', 'tasks', 'reminderState', 'medications', 'doseLogs', 'routines', 'routineRuns', 'profile', 'inventoryItems', 'laundryLoads', 'walks'];
   startReminderEngine({
     stateOf: reminderState,
     markFired,

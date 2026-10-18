@@ -19,7 +19,7 @@
 export const LOCATIONS = [
   { id: 'bedroom', group: 'home', emoji: '🛏️', wall: '#E8D9D1', floor: '#C7AB91', floorLine: 0.58, optional: false, shipped: true },
   { id: 'kitchen', group: 'home', emoji: '🍳', wall: '#E1E6DD', floor: '#C8B898', floorLine: 0.6, optional: false, shipped: true },
-  { id: 'bathroom', group: 'home', emoji: '🛁', wall: '#DDE7E6', floor: '#C9C3B8', floorLine: 0.6, optional: false, shipped: false },
+  { id: 'bathroom', group: 'home', emoji: '🛁', wall: '#DDE7E6', floor: '#C9C3B8', floorLine: 0.6, optional: false, shipped: true },
   { id: 'entertainment', group: 'home', emoji: '🎮', wall: '#EADCDF', floor: '#BBA898', floorLine: 0.6, optional: false, shipped: false },
   { id: 'study', group: 'home', emoji: '📚', wall: '#E4E4EA', floor: '#BDB2A4', floorLine: 0.62, optional: true, shipped: false },
   { id: 'gym', group: 'home', emoji: '🏋️', wall: '#E1E7DF', floor: '#B8B5A2', floorLine: 0.62, optional: true, shipped: false },

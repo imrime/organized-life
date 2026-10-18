@@ -2,6 +2,8 @@
 // Placeholder town art, portrait (docs/spec/rooms/town.md §1). Safe-zone pixel coordinates (1080 × 1620).
 
 import { html } from '../../ui/lib.js';
+import { visualStateFor } from '../badges.js';
+import { garment, iconViewBox } from '../character.js';
 
 const INK = '#2B2420';
 const SW = 6;
@@ -21,9 +23,18 @@ function shop({ x, y, w, h, awning, sign, id }) {
   </g>`;
 }
 
+/** Mannequin sign: the most recently bought garment, or a plain shirt. @param {string} state "slot|template|color" */
+function mannequin(state) {
+  const [slot, template, color] = state.split('|');
+  if (!template) return null;
+  return html`<svg x="-90" y="-80" width="180" height="160" viewBox=${iconViewBox(slot, template)}>${garment({ template, color })}</svg>`;
+}
+
 export function townArt() {
+  const bought = visualStateFor('town.clothing-shop');
+  const walking = visualStateFor('town.park') === 'walking';
   const apple = html`<circle cx="-30" cy="10" r="26" fill="#C4413E" stroke=${INK} stroke-width="4" /><circle cx="22" cy="14" r="22" fill="#E8C24A" stroke=${INK} stroke-width="4" /><path d="M-30-16c4-10 10-12 16-12" stroke=${INK} stroke-width="4" fill="none" />`;
-  const shirt = html`<path d="M-36-30h72l20 22-16 14-8-8v52h-64v-52l-8 8-16-14z" fill="#4F8A5B" stroke=${INK} stroke-width="4" stroke-linejoin="round" />`;
+  const shirt = (bought !== 'default' && mannequin(bought)) || html`<path d="M-36-30h72l20 22-16 14-8-8v52h-64v-52l-8 8-16-14z" fill="#4F8A5B" stroke=${INK} stroke-width="4" stroke-linejoin="round" />`;
   return html`
     <rect x="-180" y="-150" width="1440" height="733" fill="#DDE7E6" />
     <rect x="-180" y="583" width="1440" height="1187" fill="#C4B19A" />
@@ -40,6 +51,7 @@ export function townArt() {
       <ellipse cx="300" cy="470" rx="60" ry="18" fill="#A7C7E7" stroke=${INK} stroke-width="4" />
       <path d="M300 470v-40" stroke="#A7C7E7" stroke-width="10" stroke-linecap="round" />
       <rect x="380" y="470" width="100" height="14" rx="4" fill="#A98263" stroke=${INK} stroke-width="4" />
+      ${walking && html`<g><circle cx="190" cy="470" r="16" fill="#F6D7C3" stroke=${INK} stroke-width="4" /><path d="M190 486v34M190 520l-14 26M190 520l14 26M176 498l28 0" stroke=${INK} stroke-width="6" stroke-linecap="round" /></g>`}
     </g>
 
     <!-- T3 bank / ATM -->

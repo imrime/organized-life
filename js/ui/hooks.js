@@ -1,7 +1,7 @@
 // @ts-check
 // Preact hooks over the app store.
 
-import { useEffect, useReducer } from './lib.js';
+import { useEffect, useReducer, useState } from './lib.js';
 import { appStore } from '../core/store.js';
 
 /**
@@ -32,4 +32,24 @@ export function useCollection(name) {
 export function useProfile(id) {
   useStoreChanges(['profile']);
   return /** @type {Record<string, any>} */ (appStore.profile(id) ?? {});
+}
+
+/**
+ * Current time, refreshed every `everyMs` (aligned to the minute for minute-based refreshes).
+ * @param {number} [everyMs]
+ */
+export function useNow(everyMs = 60_000) {
+  const [now, setNow] = useState(() => new Date());
+  useEffect(() => {
+    /** @type {ReturnType<typeof setTimeout>} */
+    let timer;
+    const delay = () => (everyMs >= 60_000 ? everyMs - (Date.now() % 60_000) + 50 : everyMs);
+    const tick = () => {
+      setNow(new Date());
+      timer = setTimeout(tick, delay());
+    };
+    timer = setTimeout(tick, delay());
+    return () => clearTimeout(timer);
+  }, [everyMs]);
+  return now;
 }

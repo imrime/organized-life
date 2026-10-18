@@ -6,6 +6,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.5.0] - 2026-10-18
+### Added
+- Bathroom is open, with a room tour and placeholder portrait art.
+- Mirror / sink: morning and evening care checklists with streaks and a 14-day history; the mirror fogs until the current routine is done.
+- Bath / shower: care habits with "Done today", schedule, reminders and "last done"; add, edit or delete habits; steam after finishing.
+- Bathroom cabinet: skincare and household supplies with expiry, period-after-opening and low-stock badges.
+- Laundry basket: worn clothes and extras (towels, bed linen, sportswear, anything else) grouped by colour or type, add from the wardrobe, stain and care warnings, add a selection to a new or queued load.
+- Washing machine: load type, cycle, temperature and duration; one load at a time with a live countdown that survives reloads, "laundry is done" reminder, unload marks clothes clean.
+- Clothing shop in Town: try on any template and colour without changing your outfit, buy into the wardrobe (Clothing expense unless it was free), optionally wear right away; the shop window shows your latest purchase.
+- Park: start and finish walks (no GPS, steps and distance are manual), log past walks, weekly totals, places with visit counts.
+- Next-task strip: laundry done, full basket, walk in progress. Quick add: walk.
+
+### Changed
+- Seed data v4 adds the Park place.
+
+### Fixed
+- Selecting several groups quickly in the laundry basket kept only the last one.
+
 ## [0.4.0] - 2026-10-18
 ### Added
 - Kitchen and Town are open, each with a room tour and placeholder portrait art.
@@ -66,7 +84,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Local-first data layer: IndexedDB wrapper, atomic undoable store, schema migrations and versioned seeds.
 - Dual-runtime test harness (browser and Node) with unit and IndexedDB tests; asset tooling (`tools/check_sw_assets.py`, `tools/hash_assets.py`).
 
-[Unreleased]: https://github.com/imrime/organized-life/compare/v0.4.0...HEAD
+[Unreleased]: https://github.com/imrime/organized-life/compare/v0.5.0...HEAD
+[0.5.0]: https://github.com/imrime/organized-life/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/imrime/organized-life/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/imrime/organized-life/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/imrime/organized-life/compare/v0.1.0...v0.2.0
